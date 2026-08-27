@@ -728,7 +728,7 @@ const qualSteps = [
         let currentLang = 'en';
         let portalMode = false;
         let clinicianAuthenticated = false;
-        let clinicianPin = null;
+        let clinicianToken = null;
         let clinicianRecords = [];
         let clinicianSessionTimer = null;
         let clinicianSessionExpiresAt = 0;
@@ -1404,39 +1404,67 @@ const qualSteps = [
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        async function fetchPatients(pin) {
+        async function postApi(payload) {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || data?.error) {
+                throw new Error(data?.error || 'Request failed');
+            }
+
+            return data;
+        }
+
+        async function fetchPatients() {
             const container = document.getElementById('client-list-container');
             container.innerHTML = '<div class="text-center py-16 text-slate-400 font-semibold">Loading patient records...</div>';
 
+            if (!clinicianToken) {
+                container.innerHTML = '<div class="text-center py-16 text-red-600 font-extrabold">Clinician session has expired. Please sign in again.</div>';
+                return;
+            }
+
             try {
-                // Existing endpoint compatibility. The backend should be upgraded to a
-                // POST/session-based clinician authentication flow for production use.
-                const response = await fetch(SCRIPT_URL + '?password=' + encodeURIComponent(pin), { method: 'GET' });
-                const data = await response.json();
-                if (data?.error) throw new Error('Unauthorized');
-                clinicianRecords = Array.isArray(data) ? data : [];
+                const data = await postApi({
+                    action: 'clinician_get_clients',
+                    token: clinicianToken
+                });
+
+                clinicianRecords = Array.isArray(data.clients) ? data.clients : [];
                 showAdminList(clinicianRecords);
             } catch (error) {
                 console.error(error);
                 clinicianRecords = [];
-                container.innerHTML = '<div class="text-center py-16"><p class="text-red-600 font-extrabold">Access denied or connection error.</p><p class="text-sm text-slate-400 mt-2">Please verify your PIN and try again.</p></div>';
-                document.getElementById('admin-logout').classList.remove('hidden');
-                showToast('Clinician portal could not be opened.');
+                clinicianToken = null;
+                clinicianAuthenticated = false;
+                container.innerHTML = '<div class="text-center py-16"><p class="text-red-600 font-extrabold">Access denied or connection error.</p><p class="text-sm text-slate-400 mt-2">Please sign in again.</p></div>';
+                showToast('Clinician session could not be verified.');
             }
         }
 
         function openClinicianModal() {
-            if (clinicianAuthenticated && Date.now() < clinicianSessionExpiresAt) {
+            if (clinicianAuthenticated && clinicianToken && Date.now() < clinicianSessionExpiresAt) {
                 showAdminList(clinicianRecords);
                 return;
             }
+
             clinicianAuthenticated = false;
-            clinicianPin = null;
+            clinicianToken = null;
+
             const modal = document.getElementById('clinician-modal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+
             document.getElementById('clinician-pin').value = '';
             document.getElementById('clinician-login-error').classList.add('hidden');
+
             setTimeout(() => document.getElementById('clinician-pin').focus(), 50);
         }
 
@@ -1451,30 +1479,43 @@ const qualSteps = [
             const button = document.getElementById('clinician-login-btn');
             const error = document.getElementById('clinician-login-error');
             const pin = input.value.trim();
+
             if (!pin) {
                 error.textContent = 'Please enter your clinician PIN.';
                 error.classList.remove('hidden');
                 input.focus();
                 return;
             }
+
             button.disabled = true;
             button.textContent = 'Verifying...';
             error.classList.add('hidden');
+
             try {
-                const response = await fetch(SCRIPT_URL + '?password=' + encodeURIComponent(pin), { method: 'GET' });
-                const data = await response.json();
-                if (data?.error || !Array.isArray(data)) throw new Error('Unauthorized');
+                const data = await postApi({
+                    action: 'clinician_login',
+                    pin: pin
+                });
+
+                if (!data.token || !Array.isArray(data.clients)) {
+                    throw new Error('Invalid authentication response');
+                }
+
                 clinicianAuthenticated = true;
-                clinicianPin = pin;
+                clinicianToken = data.token;
                 clinicianSessionExpiresAt = Date.now() + SESSION_MINUTES * 60 * 1000;
+
                 startClinicianSessionTimer();
                 closeClinicianModal();
-                showAdminList(data);
+                showAdminList(data.clients);
                 showToast('Clinician portal opened.', 'success');
+
             } catch (e) {
-                error.textContent = 'Access denied. Please check your PIN.';
+                console.error(e);
+                error.textContent = 'Access denied. Please check your PIN or connection.';
                 error.classList.remove('hidden');
                 input.select();
+
             } finally {
                 button.disabled = false;
                 button.textContent = 'Enter Secure Portal';
@@ -1483,25 +1524,45 @@ const qualSteps = [
 
         function startClinicianSessionTimer() {
             clearInterval(clinicianSessionTimer);
+
             clinicianSessionTimer = setInterval(() => {
-                if (!clinicianAuthenticated || Date.now() >= clinicianSessionExpiresAt) {
+                if (!clinicianAuthenticated || !clinicianToken || Date.now() >= clinicianSessionExpiresAt) {
                     logoutClinician(false);
                 }
             }, 1000);
         }
 
-        function logoutClinician(showMessage = true) {
+        async function logoutClinician(showMessage = true) {
+            const token = clinicianToken;
+
             clinicianAuthenticated = false;
-            clinicianPin = null;
+            clinicianToken = null;
             clinicianRecords = [];
             activePatientData = null;
             portalMode = false;
+
             clearInterval(clinicianSessionTimer);
             clinicianSessionExpiresAt = 0;
+
             document.getElementById('patient-search').value = '';
             document.getElementById('patient-filter').value = 'all';
+
+            if (token) {
+                try {
+                    await postApi({
+                        action: 'clinician_logout',
+                        token: token
+                    });
+                } catch (error) {
+                    console.warn('Clinician logout could not be confirmed by server.', error);
+                }
+            }
+
             showStep(0, false);
-            if (showMessage) showToast('Clinician session ended.');
+
+            if (showMessage) {
+                showToast('Clinician session ended.');
+            }
         }
 
         document.addEventListener('change', (e) => {
@@ -1529,7 +1590,7 @@ const qualSteps = [
         document.getElementById('clinician-pin').addEventListener('keydown', e => { if (e.key === 'Enter') submitClinicianLogin(); });
         document.getElementById('clinician-modal').addEventListener('click', e => { if (e.target.id === 'clinician-modal') closeClinicianModal(); });
         document.getElementById('admin-logout').addEventListener('click', () => logoutClinician(true));
-        document.getElementById('admin-refresh').addEventListener('click', () => clinicianPin && fetchPatients(clinicianPin));
+        document.getElementById('admin-refresh').addEventListener('click', () => clinicianToken && fetchPatients());
         document.getElementById('patient-search').addEventListener('input', renderPatientList);
         document.getElementById('patient-filter').addEventListener('change', renderPatientList);
         document.getElementById('results-back').addEventListener('click', goBackToPatients);
