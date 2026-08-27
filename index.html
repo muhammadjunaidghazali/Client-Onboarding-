@@ -72,6 +72,7 @@
             .glass-panel { border: none; box-shadow: none; padding: 0; background: white; }
             .no-print, #vanta-bg { display: none !important; }
             canvas { max-width: 100% !important; }
+            .numerology-scroll { max-height: none !important; overflow: visible !important; }
         }
     </style>
 </head>
@@ -84,7 +85,7 @@
         <span class="font-semibold text-sm" id="toast-text" data-en="Please complete all fields to continue." data-ur="Baraye meharbani aage barhne ke liye tamam sawalaat ke jawab dein.">Please complete all fields to continue.</span>
     </div>
 
-    <div class="glass-panel w-full max-w-4xl rounded-[2rem] p-6 md:p-12 relative mt-4 mb-12 overflow-hidden">
+    <div class="glass-panel w-full max-w-5xl rounded-[2rem] p-6 md:p-12 relative mt-4 mb-12 overflow-hidden">
         
         <!-- Header & Progress -->
         <div class="no-print" id="header-bar">
@@ -162,7 +163,6 @@
         <!-- ========================================== -->
         <div id="step-booking" class="step-section text-center py-16 relative">
             
-            <!-- Hidden Crisis Banner (Triggered by PHQ-9 Q9) -->
             <div id="crisis-banner" class="hidden max-w-2xl mx-auto mb-10 bg-red-50 border border-red-200 rounded-3xl p-6 text-left shadow-sm">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5">
                     <div class="bg-red-100 p-3 rounded-full flex-shrink-0">
@@ -193,7 +193,6 @@
                 </a>
             </div>
 
-            <!-- Fix applied here: Opacity adjusted to 20% by default, making it visible as a faint watermark -->
             <div id="clinician-lock" class="fixed bottom-6 right-6 opacity-20 hover:opacity-100 transition-opacity cursor-pointer p-3 z-50 rounded-full border border-slate-200 bg-white/50 backdrop-blur-sm">
                 <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
             </div>
@@ -232,6 +231,7 @@
             </div>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <!-- LEFT COLUMN -->
                 <div>
                     <h3 class="text-xs font-bold text-slate-400 mb-5 tracking-widest uppercase">Psychometric Telemetry</h3>
                     <div class="space-y-4">
@@ -260,35 +260,48 @@
                     </div>
                 </div>
 
+                <!-- RIGHT COLUMN -->
                 <div>
                     <h3 class="text-xs font-bold text-slate-400 mb-5 tracking-widest uppercase flex justify-between">
-                        Motivational Numerology <span class="text-[10px] text-slate-400 normal-case tracking-normal font-normal">Based on Sally Faubion</span>
+                        Motivational Numerology <span class="text-[10px] text-slate-400 normal-case tracking-normal font-normal">By Sally Faubion</span>
                     </h3>
-                    <div class="space-y-4">
+                    <div class="space-y-4 numerology-scroll max-h-[800px] overflow-y-auto pr-2">
+                        
                         <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100 shadow-sm">
                             <div class="flex justify-between items-baseline mb-2"><h4 class="text-amber-800 font-bold">Destiny (Expression)</h4><span class="text-2xl text-amber-600 font-bold" id="num-destiny">?</span></div>
-                            <p class="text-sm text-amber-700/80 leading-relaxed">Most influential number regarding personal motivations, environment preferences, and career aspirations.</p>
+                            <p class="text-sm text-amber-700/80 leading-relaxed" id="desc-destiny">Most influential number regarding personal motivations...</p>
                         </div>
+                        
                         <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100 shadow-sm">
                             <div class="flex justify-between items-baseline mb-2"><h4 class="text-amber-800 font-bold">Character (Life Path)</h4><span class="text-2xl text-amber-600 font-bold" id="num-character">?</span></div>
-                            <p class="text-sm text-amber-700/80 leading-relaxed">Represents public and social qualities, as well as behavior in personal relations.</p>
+                            <p class="text-sm text-amber-700/80 leading-relaxed" id="desc-character">Represents public and social qualities...</p>
                         </div>
+                        
                         <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100 shadow-sm">
                             <div class="flex justify-between items-baseline mb-2"><h4 class="text-amber-800 font-bold">Soul Urge (Heart's Desire)</h4><span class="text-2xl text-amber-600 font-bold" id="num-soul">?</span></div>
-                            <p class="text-sm text-amber-700/80 leading-relaxed">Presents a view of the intuitive, soulful self and internal motivations.</p>
+                            <p class="text-sm text-amber-700/80 leading-relaxed" id="desc-soul">Presents a view of the intuitive, soulful self...</p>
                         </div>
+
                         <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100 shadow-sm">
-                            <div class="flex justify-between items-baseline mb-2"><h4 class="text-amber-800 font-bold">Personality</h4><span class="text-2xl text-amber-600 font-bold" id="num-personality">?</span></div>
-                            <p class="text-sm text-amber-700/80 leading-relaxed">Describes the behind-the-scenes or private self.</p>
+                            <div class="flex justify-between items-baseline mb-2"><h4 class="text-amber-800 font-bold">Hidden Agenda</h4><span class="text-2xl text-amber-600 font-bold" id="num-agenda">?</span></div>
+                            <p class="text-sm text-amber-700/80 leading-relaxed" id="desc-agenda">This vibration offers your innate desires...</p>
                         </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100 shadow-sm text-center">
-                                <h4 class="text-amber-800 font-bold text-sm mb-1">Attitude</h4><span class="text-3xl text-amber-600 font-bold" id="num-attitude">?</span>
-                            </div>
-                            <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100 shadow-sm text-center">
-                                <h4 class="text-amber-800 font-bold text-sm mb-1">Divine Purpose</h4><span class="text-3xl text-amber-600 font-bold" id="num-purpose">?</span>
-                            </div>
+                        
+                        <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100 shadow-sm">
+                            <div class="flex justify-between items-baseline mb-2"><h4 class="text-amber-800 font-bold">Personality (Day of Birth)</h4><span class="text-2xl text-amber-600 font-bold" id="num-personality">?</span></div>
+                            <p class="text-sm text-amber-700/80 leading-relaxed" id="desc-personality">Describes the behind-the-scenes you...</p>
                         </div>
+
+                        <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100 shadow-sm">
+                            <div class="flex justify-between items-baseline mb-2"><h4 class="text-amber-800 font-bold">Attitude</h4><span class="text-2xl text-amber-600 font-bold" id="num-attitude">?</span></div>
+                            <p class="text-sm text-amber-700/80 leading-relaxed" id="desc-attitude">How you react to circumstances...</p>
+                        </div>
+                        
+                        <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100 shadow-sm">
+                            <div class="flex justify-between items-baseline mb-2"><h4 class="text-amber-800 font-bold">Divine Purpose</h4><span class="text-2xl text-amber-600 font-bold" id="num-purpose">?</span></div>
+                            <p class="text-sm text-amber-700/80 leading-relaxed" id="desc-purpose">Your farewell-performance vibration...</p>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -312,113 +325,151 @@
         let currentLang = 'en';
 
         document.addEventListener('DOMContentLoaded', () => {
-            try {
-                VANTA.FOG({ el: "#vanta-bg", mouseControls: true, touchControls: true, minHeight: 200, minWidth: 200, highlightColor: 0xe2e8f0, midtoneColor: 0x479375, lowlightColor: 0xf7f5f2, baseColor: 0xf7f5f2, blurFactor: 0.85, speed: 0.50, zoom: 1.50 });
-            } catch(e) {}
+            try { VANTA.FOG({ el: "#vanta-bg", mouseControls: true, touchControls: true, minHeight: 200, minWidth: 200, highlightColor: 0xe2e8f0, midtoneColor: 0x479375, lowlightColor: 0xf7f5f2, baseColor: 0xf7f5f2, blurFactor: 0.85, speed: 0.50, zoom: 1.50 }); } catch(e) {}
         });
 
         // ==========================================
-        // BILINGUAL DATA STRUCTURES
+        // CLINICAL DATA STRUCTURES
         // ==========================================
         const qualSteps = [
-            { id: 1, 
-              en: { title: "Physical Well-being", objective: "Understanding physical signs helps us map where tension is held in your body.", q1: "Where do you feel stress or tension most in your body right now?", q2: "How have your sleep, appetite, or energy levels changed recently?" },
-              ur: { title: "Jismani Sehat", objective: "Jismani alamaat samajhne se humein maloom hota hai ke tension kahan hai.", q1: "Aap is waqt apne jism mein sab se zyada stress ya khichao kahan mehsoos karte hain?", q2: "Haal hi mein aap ki neend, bhook, ya energy levels mein kya tabdeeli aayi hai?" }
-            },
-            { id: 2, 
-              en: { title: "Daily Routine", objective: "Exploring how deeply these feelings might be disrupting your day-to-day life.", q1: "How is this affecting your ability to handle daily routines, work, or studies?", q2: "Have you found yourself avoiding social gatherings or friends lately?" },
-              ur: { title: "Rozmara ki Routine", objective: "Yeh janna zaroori hai ke in ahsasaat se aap ki rozmara zindagi kitni mutassir ho rahi hai.", q1: "Yeh aap ke rozmara ke kamo, kaam, ya padhai ko kis tarah mutassir kar raha hai?", q2: "Kya aap ne haal hi mein logon se milna julna ya doston se doori ikhtiyar ki hai?" }
-            },
-            { id: 3, 
-              en: { title: "Family Context", objective: "Acknowledging the deep importance of family roles and expectations.", q1: "How are things going at home with your family or household right now?", q2: "What expectations do family members have of you, and how are you managing them?" },
-              ur: { title: "Ghar aur Khandan", objective: "Khandan aur ghar walon ki ahmiyat aur asraat ko samajhna.", q1: "Ghar par khandan walon ke sath halaat kaise chal rahe hain?", q2: "Ghar walon ko aap se kya umeedein hain, aur aap unhein kaise manage kar rahe hain?" }
-            },
-            { id: 4, 
-              en: { title: "Life Changes", objective: "Pinpointing external stressors like financial issues or major life transitions.", q1: "Have there been any major changes, pressures, or difficulties in your environment recently?", q2: "Looking back, was there a specific event when these difficulties started getting worse?" },
-              ur: { title: "Zindagi mein Tabdeeliyan", objective: "Bahar ke masail jaise maali pareshaniyan ya zindagi ki badi tabdeeliyan.", q1: "Kya haal hi mein aap ke ird-gird mahol ya maali halaat mein koi badi tabdeeli ya mushkil aayi hai?", q2: "Agar aap peechay mud kar dekhein, toh kya koi aesa waqiya tha jab se yeh mushkilat barhna shuru huin?" }
-            },
-            { id: 5, 
-              en: { title: "Meaning & Faith", objective: "Discovering what you believe is the cause, acknowledging ties to personal faith.", q1: "What do you feel is the main reason or cause behind these problems?", q2: "How do your beliefs, prayers, or faith help you cope with this situation?" },
-              ur: { title: "Aqeedah aur Soch", objective: "Aap ke khayal mein is maslay ki wajah aur aap ke aqeeday ka asar.", q1: "Aap ke khayal mein in pareshaniyon ki asal wajah kya hai?", q2: "Aap ka aqeedah, ibadat, ya imaan is soorat-e-haal ka samna karne mein aap ki kaise madad karta hai?" }
-            },
-            { id: 6, 
-              en: { title: "Internal Thoughts", objective: "A safe space to uncover deeper emotional struggles.", q1: "Inside yourself, what is the heaviest emotion or thought you are carrying right now?", q2: "If you could safely change one thing about your current life situation, what would it be?" },
-              ur: { title: "Androoni Soch", objective: "Ek mehfooz jagah jahan aap apne andar ke gehre jazbaat share kar sakein.", q1: "Apne andar, aap is waqt kis sab se bhari jazbe ya soch ka bojh uthaye hue hain?", q2: "Agar aap apni maujooda zindagi mein kisi ek cheez ko bina kisi darr ke tabdeel kar sakein, toh woh kya hogi?" }
-            }
+            { id: 1, en: { title: "Physical Well-being", objective: "Understanding physical signs helps us map where tension is held in your body.", q1: "Where do you feel stress or tension most in your body right now?", q2: "How have your sleep, appetite, or energy levels changed recently?" }, ur: { title: "Jismani Sehat", objective: "Jismani alamaat samajhne se humein maloom hota hai ke tension kahan hai.", q1: "Aap is waqt apne jism mein sab se zyada stress ya khichao kahan mehsoos karte hain?", q2: "Haal hi mein aap ki neend, bhook, ya energy levels mein kya tabdeeli aayi hai?" } },
+            { id: 2, en: { title: "Daily Routine", objective: "Exploring how deeply these feelings might be disrupting your day-to-day life.", q1: "How is this affecting your ability to handle daily routines, work, or studies?", q2: "Have you found yourself avoiding social gatherings or friends lately?" }, ur: { title: "Rozmara ki Routine", objective: "Yeh janna zaroori hai ke in ahsasaat se aap ki rozmara zindagi kitni mutassir ho rahi hai.", q1: "Yeh aap ke rozmara ke kamo, kaam, ya padhai ko kis tarah mutassir kar raha hai?", q2: "Kya aap ne haal hi mein logon se milna julna ya doston se doori ikhtiyar ki hai?" } },
+            { id: 3, en: { title: "Family Context", objective: "Acknowledging the deep importance of family roles and expectations.", q1: "How are things going at home with your family or household right now?", q2: "What expectations do family members have of you, and how are you managing them?" }, ur: { title: "Ghar aur Khandan", objective: "Khandan aur ghar walon ki ahmiyat aur asraat ko samajhna.", q1: "Ghar par khandan walon ke sath halaat kaise chal rahe hain?", q2: "Ghar walon ko aap se kya umeedein hain, aur aap unhein kaise manage kar rahe hain?" } },
+            { id: 4, en: { title: "Life Changes", objective: "Pinpointing external stressors like financial issues or major life transitions.", q1: "Have there been any major changes, pressures, or difficulties in your environment recently?", q2: "Looking back, was there a specific event when these difficulties started getting worse?" }, ur: { title: "Zindagi mein Tabdeeliyan", objective: "Bahar ke masail jaise maali pareshaniyan ya zindagi ki badi tabdeeliyan.", q1: "Kya haal hi mein aap ke ird-gird mahol ya maali halaat mein koi badi tabdeeli ya mushkil aayi hai?", q2: "Agar aap peechay mud kar dekhein, toh kya koi aesa waqiya tha jab se yeh mushkilat barhna shuru huin?" } },
+            { id: 5, en: { title: "Meaning & Faith", objective: "Discovering what you believe is the cause, acknowledging ties to personal faith.", q1: "What do you feel is the main reason or cause behind these problems?", q2: "How do your beliefs, prayers, or faith help you cope with this situation?" }, ur: { title: "Aqeedah aur Soch", objective: "Aap ke khayal mein is maslay ki wajah aur aap ke aqeeday ka asar.", q1: "Aap ke khayal mein in pareshaniyon ki asal wajah kya hai?", q2: "Aap ka aqeedah, ibadat, ya imaan is soorat-e-haal ka samna karne mein aap ki kaise madad karta hai?" } },
+            { id: 6, en: { title: "Internal Thoughts", objective: "A safe space to uncover deeper emotional struggles.", q1: "Inside yourself, what is the heaviest emotion or thought you are carrying right now?", q2: "If you could safely change one thing about your current life situation, what would it be?" }, ur: { title: "Androoni Soch", objective: "Ek mehfooz jagah jahan aap apne andar ke gehre jazbaat share kar sakein.", q1: "Apne andar, aap is waqt kis sab se bhari jazbe ya soch ka bojh uthaye hue hain?", q2: "Agar aap apni maujooda zindagi mein kisi ek cheez ko bina kisi darr ke tabdeel kar sakein, toh woh kya hogi?" } }
         ];
 
-        const phq9_qs = [
-            {en: "Little interest or pleasure in doing things", ur: "Kamon mein dil na lagna ya maza na aana"}, 
-            {en: "Feeling down, depressed, or hopeless", ur: "Udaas, pareshan, ya na-umeed mehsoos karna"}, 
-            {en: "Trouble falling or staying asleep", ur: "Neend aane mein masla ya bohut zyada sona"}, 
-            {en: "Feeling tired or having little energy", ur: "Thakaawat mehsoos karna ya energy kam lagna"}, 
-            {en: "Poor appetite or overeating", ur: "Bhook na lagna ya bohut zyada khana"}, 
-            {en: "Feeling bad about yourself", ur: "Apne bare mein bura mehsoos karna"}, 
-            {en: "Trouble concentrating on things", ur: "Cheezon par tawajjo dene (concentrate) mein masla"}, 
-            {en: "Moving or speaking slowly, or being restless", ur: "Aahista bolna/chalna, ya phir bohut bechain rehna"}, 
-            {en: "Thoughts that you would be better off dead", ur: "Aise khayalat aana ke aap mar jayein toh behtar hai"}
-        ];
-        const gad7_qs = [
-            {en: "Feeling nervous, anxious or on edge", ur: "Ghabrahat, bechaini, ya tension mehsoos karna"}, 
-            {en: "Not being able to stop or control worrying", ur: "Fikar karne se khud ko rok na paana"}, 
-            {en: "Worrying too much about different things", ur: "Mukhtalif cheezon ke baare mein hadd se fikar karna"}, 
-            {en: "Trouble relaxing", ur: "Pur-sukoon hone mein masla aana"}, 
-            {en: "Being so restless that it is hard to sit still", ur: "Itni bechaini hona ke ek jagah tik kar baithna mushkil ho"}, 
-            {en: "Becoming easily annoyed or irritable", ur: "Choti baaton par chirchida-pan ya gussa aana"}, 
-            {en: "Feeling afraid as if something awful might happen", ur: "Khauf mehsoos karna jaise kuch bura hone wala hai"}
-        ];
-        const standard_opts = {
-            en: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
-            ur: ["Bilkul nahi", "Kuch din", "Aadhe se zyada din", "Taqreeban har roz"]
-        };
+        const phq9_qs = [{en: "Little interest or pleasure in doing things", ur: "Kamon mein dil na lagna ya maza na aana"}, {en: "Feeling down, depressed, or hopeless", ur: "Udaas, pareshan, ya na-umeed mehsoos karna"}, {en: "Trouble falling or staying asleep", ur: "Neend aane mein masla ya bohut zyada sona"}, {en: "Feeling tired or having little energy", ur: "Thakaawat mehsoos karna ya energy kam lagna"}, {en: "Poor appetite or overeating", ur: "Bhook na lagna ya bohut zyada khana"}, {en: "Feeling bad about yourself", ur: "Apne bare mein bura mehsoos karna"}, {en: "Trouble concentrating on things", ur: "Cheezon par tawajjo dene (concentrate) mein masla"}, {en: "Moving or speaking slowly, or being restless", ur: "Aahista bolna/chalna, ya phir bohut bechain rehna"}, {en: "Thoughts that you would be better off dead", ur: "Aise khayalat aana ke aap mar jayein toh behtar hai"}];
+        const gad7_qs = [{en: "Feeling nervous, anxious or on edge", ur: "Ghabrahat, bechaini, ya tension mehsoos karna"}, {en: "Not being able to stop or control worrying", ur: "Fikar karne se khud ko rok na paana"}, {en: "Worrying too much about different things", ur: "Mukhtalif cheezon ke baare mein hadd se fikar karna"}, {en: "Trouble relaxing", ur: "Pur-sukoon hone mein masla aana"}, {en: "Being so restless that it is hard to sit still", ur: "Itni bechaini hona ke ek jagah tik kar baithna mushkil ho"}, {en: "Becoming easily annoyed or irritable", ur: "Choti baaton par chirchida-pan ya gussa aana"}, {en: "Feeling afraid as if something awful might happen", ur: "Khauf mehsoos karna jaise kuch bura hone wala hai"}];
+        const standard_opts = {en: ["Not at all", "Several days", "More than half the days", "Nearly every day"], ur: ["Bilkul nahi", "Kuch din", "Aadhe se zyada din", "Taqreeban har roz"]};
+        const dass21_qs = [{type: 3, en: "I found it hard to wind down", ur: "Mujhe pur-sukoon hone mein mushkil hui"}, {type: 2, en: "I was aware of dryness of my mouth", ur: "Mujhe apne moonh ka sookhna mehsoos hua"}, {type: 1, en: "I couldn't seem to experience any positive feeling at all", ur: "Mujhe koi musbat (positive) ehsaas nahi ho raha tha"}, {type: 2, en: "I experienced breathing difficulty", ur: "Mujhe saans lene mein dushwari hui"}, {type: 1, en: "I found it difficult to work up the initiative to do things", ur: "Kisi kaam ki shuruaat karne mein mushkil lag rahi thi"}, {type: 3, en: "I tended to over-react to situations", ur: "Main har baat par hadd se zyada react kar raha tha"}, {type: 2, en: "I experienced trembling", ur: "Mujhe jism mein kapkapi mehsoos hui"}, {type: 3, en: "I felt that I was using a lot of nervous energy", ur: "Mujhe laga meri bechaini mein energy zaya ho rahi hai"}, {type: 2, en: "I was worried about situations in which I might panic", ur: "Main aisi soorathal se darta tha jahan mujhe panic ho"}, {type: 1, en: "I felt that I had nothing to look forward to", ur: "Mujhe laga meri zindagi mein agay kuch acha nahi hai"}, {type: 3, en: "I found myself getting agitated", ur: "Main khud ko bechain aur chirchida mehsoos kar raha tha"}, {type: 3, en: "I found it difficult to relax", ur: "Mujhe relax karne mein mushkil pesh aa rahi thi"}, {type: 1, en: "I felt down-hearted and blue", ur: "Main udaas aur mayoos feel kar raha tha"}, {type: 3, en: "I was intolerant of anything that kept me from getting on", ur: "Kaam mein rukawat banne wali har cheez par gussa tha"}, {type: 2, en: "I felt I was close to panic", ur: "Mujhe laga jaise mujhe panic attack aane wala hai"}, {type: 1, en: "I was unable to become enthusiastic about anything", ur: "Mera kisi bhi cheez mein josh ya dilchaspi nahi thi"}, {type: 1, en: "I felt I wasn't worth much as a person", ur: "Mujhe apni koi qeemat ya ahmiyat mehsoos nahi hui"}, {type: 3, en: "I felt that I was rather touchy", ur: "Main choti choti baaton par hassas (touchy) ho raha tha"}, {type: 2, en: "I was aware of the action of my heart without physical exertion", ur: "Bina thakawat ke mujhe apni dil ki dharkan taiz lagi"}, {type: 2, en: "I felt scared without any good reason", ur: "Main bina kisi waja ke dara hua tha"}, {type: 1, en: "I felt that life was meaningless", ur: "Mujhe zindagi bilkul be-maqsad lag rahi thi"}];
+        const dass_opts = {en: ["Did not apply to me", "Applied to some degree", "Applied considerably", "Applied very much"], ur: ["Mujh par lagoo nahi hua", "Thoda bohut lagoo hua", "Kafi hadd tak lagoo hua", "Bohut zyada lagoo hua"]};
+        const wemwbs_qs = [{en: "I've been feeling optimistic about the future", ur: "Main mustaqbil (future) ke bare mein pur-umeed raha hoon"}, {en: "I've been feeling useful", ur: "Mujhe laga ke main faida-mand hoon"}, {en: "I've been feeling relaxed", ur: "Main pur-sukoon (relaxed) raha hoon"}, {en: "I've been feeling interested in other people", ur: "Mujhe dusre logon mein dilchaspi rahi hai"}, {en: "I've had energy to spare", ur: "Mujhe apne andar kafi energy mehsoos hui"}, {en: "I've been dealing with problems well", ur: "Main masail ko achi tarah handle kar raha hoon"}, {en: "I've been thinking clearly", ur: "Main bilkul saaf soch samajh pa raha hoon"}, {en: "I've been feeling good about myself", ur: "Main apne bare mein acha mehsoos kar raha hoon"}, {en: "I've been feeling close to other people", ur: "Mujhe logon se apna-pan mehsoos hua hai"}, {en: "I've been feeling confident", ur: "Main pur-aitmaad (confident) raha hoon"}, {en: "I've been able to make up my own mind", ur: "Main apne faislay khud kar pa raha hoon"}, {en: "I've been feeling loved", ur: "Mujhe mehsoos hua ke log mujhse pyar karte hain"}, {en: "I've been interested in new things", ur: "Mujhe nayi cheezon mein dilchaspi ho rahi hai"}, {en: "I've been feeling cheerful", ur: "Main khush-mizaaj raha hoon"}];
+        const wemwbs_opts = {en: ["None of the time", "Rarely", "Some of the time", "Often", "All of the time"], ur: ["Kabhi nahi", "Bohat kam", "Kabhi kabhi", "Aksar", "Hamesha"]};
 
-        const dass21_qs = [
-            {type: 3, en: "I found it hard to wind down", ur: "Mujhe pur-sukoon hone mein mushkil hui"}, 
-            {type: 2, en: "I was aware of dryness of my mouth", ur: "Mujhe apne moonh ka sookhna mehsoos hua"}, 
-            {type: 1, en: "I couldn't seem to experience any positive feeling at all", ur: "Mujhe koi musbat (positive) ehsaas nahi ho raha tha"}, 
-            {type: 2, en: "I experienced breathing difficulty", ur: "Mujhe saans lene mein dushwari hui"}, 
-            {type: 1, en: "I found it difficult to work up the initiative to do things", ur: "Kisi kaam ki shuruaat karne mein mushkil lag rahi thi"}, 
-            {type: 3, en: "I tended to over-react to situations", ur: "Main har baat par hadd se zyada react kar raha tha"}, 
-            {type: 2, en: "I experienced trembling", ur: "Mujhe jism mein kapkapi mehsoos hui"}, 
-            {type: 3, en: "I felt that I was using a lot of nervous energy", ur: "Mujhe laga meri bechaini mein energy zaya ho rahi hai"}, 
-            {type: 2, en: "I was worried about situations in which I might panic", ur: "Main aisi soorathal se darta tha jahan mujhe panic ho"}, 
-            {type: 1, en: "I felt that I had nothing to look forward to", ur: "Mujhe laga meri zindagi mein agay kuch acha nahi hai"}, 
-            {type: 3, en: "I found myself getting agitated", ur: "Main khud ko bechain aur chirchida mehsoos kar raha tha"}, 
-            {type: 3, en: "I found it difficult to relax", ur: "Mujhe relax karne mein mushkil pesh aa rahi thi"}, 
-            {type: 1, en: "I felt down-hearted and blue", ur: "Main udaas aur mayoos feel kar raha tha"}, 
-            {type: 3, en: "I was intolerant of anything that kept me from getting on", ur: "Kaam mein rukawat banne wali har cheez par gussa tha"}, 
-            {type: 2, en: "I felt I was close to panic", ur: "Mujhe laga jaise mujhe panic attack aane wala hai"}, 
-            {type: 1, en: "I was unable to become enthusiastic about anything", ur: "Mera kisi bhi cheez mein josh ya dilchaspi nahi thi"}, 
-            {type: 1, en: "I felt I wasn't worth much as a person", ur: "Mujhe apni koi qeemat ya ahmiyat mehsoos nahi hui"}, 
-            {type: 3, en: "I felt that I was rather touchy", ur: "Main choti choti baaton par hassas (touchy) ho raha tha"}, 
-            {type: 2, en: "I was aware of the action of my heart without physical exertion", ur: "Bina thakawat ke mujhe apni dil ki dharkan taiz lagi"}, 
-            {type: 2, en: "I felt scared without any good reason", ur: "Main bina kisi waja ke dara hua tha"}, 
-            {type: 1, en: "I felt that life was meaningless", ur: "Mujhe zindagi bilkul be-maqsad lag rahi thi"}
-        ];
-        const dass_opts = {
-            en: ["Did not apply to me", "Applied to some degree", "Applied considerably", "Applied very much"],
-            ur: ["Mujh par lagoo nahi hua", "Thoda bohut lagoo hua", "Kafi hadd tak lagoo hua", "Bohut zyada lagoo hua"]
-        };
-
-        const wemwbs_qs = [
-            {en: "I've been feeling optimistic about the future", ur: "Main mustaqbil (future) ke bare mein pur-umeed raha hoon"}, 
-            {en: "I've been feeling useful", ur: "Mujhe laga ke main faida-mand hoon"}, 
-            {en: "I've been feeling relaxed", ur: "Main pur-sukoon (relaxed) raha hoon"}, 
-            {en: "I've been feeling interested in other people", ur: "Mujhe dusre logon mein dilchaspi rahi hai"}, 
-            {en: "I've had energy to spare", ur: "Mujhe apne andar kafi energy mehsoos hui"}, 
-            {en: "I've been dealing with problems well", ur: "Main masail ko achi tarah handle kar raha hoon"}, 
-            {en: "I've been thinking clearly", ur: "Main bilkul saaf soch samajh pa raha hoon"}, 
-            {en: "I've been feeling good about myself", ur: "Main apne bare mein acha mehsoos kar raha hoon"}, 
-            {en: "I've been feeling close to other people", ur: "Mujhe logon se apna-pan mehsoos hua hai"}, 
-            {en: "I've been feeling confident", ur: "Main pur-aitmaad (confident) raha hoon"}, 
-            {en: "I've been able to make up my own mind", ur: "Main apne faislay khud kar pa raha hoon"}, 
-            {en: "I've been feeling loved", ur: "Mujhe mehsoos hua ke log mujhse pyar karte hain"}, 
-            {en: "I've been interested in new things", ur: "Mujhe nayi cheezon mein dilchaspi ho rahi hai"}, 
-            {en: "I've been feeling cheerful", ur: "Main khush-mizaaj raha hoon"}
-        ];
-        const wemwbs_opts = {
-            en: ["None of the time", "Rarely", "Some of the time", "Often", "All of the time"],
-            ur: ["Kabhi nahi", "Bohat kam", "Kabhi kabhi", "Aksar", "Hamesha"]
+        // ==========================================
+        // SALLY FAUBION NUMEROLOGY DICTIONARY
+        // ==========================================
+        const numerologyMeaning = {
+          destiny: {
+            description: "This is the most influential number in relation to your personal motivations, what and who you like in your surroundings, and the career(s) you would be most likely to aspire toward.",
+            1: "This is the path of the risk-taker, the entrepreneur, the wholly independent trail-blazer.",
+            2: "This is the path of the homemaker, the team player, the caretaker, and the collector.",
+            3: 'This is the path of the adventurous, creative, proverbial "Peter Pan", and/or the disciplined scientific "Dapper Dan/Danielle".',
+            4: "This is the path of the hard-working, dedicated, forthright employee/entrepreneur and kind-hearted, loyal friend.",
+            5: "This is the path of the energized freedom fighter, promoter, and the stylish, socially adept/world traveler.",
+            6: "This is the path of the good citizen, patient teacher, champion of fairness and justice, and cosmic parent to all.",
+            7: "This is the path of the scholar, the perfectionist, the genius, and the keeper of secrets.",
+            8: "This is the path of the matriarch/patriarch, the judge, the producer/director, the orchestrator, and the class act.",
+            9: 'This is the path of the aristocratic and genteel "old soul", and the universal humanitarian.',
+            11: "This is the path of the intuitive advisor/counselor, the peace-maker, and the enlightened public figure.",
+            22: "This is the path of the enlightened, prudent, organized, determined, and inspiring visionary."
+          },
+          personality: {
+            description: "This number describes the behind-the-scenes or private you.",
+            1: "You are dynamic, strong-willed and a natural leader, and your single-minded focus sets the stage for your success.",
+            2: "You are a peacemaker, nurturing, caring and kind, and an indispensable friend, mate, employee or boss.",
+            3: "You are awesomely creative, imaginary and entertaining, and a superlative host or hostess.",
+            4: "You are a dedicated, detail-oriented and a tireless worker, and your word is as good as gold.",
+            5: "Your intelligent, enthusiastic, and genial nature inspires and motivates all who know you.",
+            6: "You are responsible, people oriented, and a lover of beauty, nature and the home.",
+            7: "You are analytical, research-oriented, and your quest for knowledge is vast and unquenchable.",
+            8: "You are an ambitious, organized, quality operator, and born to be a leader with a penchant for protocol and justice.",
+            9: "You are multi-talented, creative and competent and you are in your true character when being of service to others.",
+            10: "You are independent, considerate, and responsible with a take-charge nature; and an optimist attitude that finds the positive in any situation.",
+            11: 'You are sensitive, intelligent, original, inspiring, a good listener and naturally assume the "big shoulders" role for many.',
+            12: "You are charming, personable and creative and your strong determination and foresight help you to manifest your goals.",
+            13: "You are astute, independent, down-to-earth and forthright, and your dedication, tenacity and endurance with any concept, circumstance or endeavor is extraordinary.",
+            14: "You are a storehouse of energy with a steel-trap mind that constantly churns out new ideas and creative, practical concepts and solutions.",
+            15: "Your independent, creative, artistic/scientific mind craves researching and analyzing vast arrays of subject matter and defending fairness and justice.",
+            16: "Your uniquely intellectual, analytical mind requires periods of alone time to sort through your endless thirst for knowledge and reaching beyond accepted boundaries in that quest.",
+            17: "You are intelligent, ambitious, courageous, possess enough energy and vitality to run a country, and you are the quintessential class act!",
+            18: "You are a multi-talented powerhouse of wisdom, strength, courage, and far-reaching compassion who is exhibiting your best when helping those in need.",
+            19: "Your adventuresome nature makes you yearn for variety and change, but when inspired, you can also be a tenacious, dedicated, and honorable employee, boss, mate and friend.",
+            20: "Your warm-hearted, helpful, and prudent nature is appreciated in any work environment and you will collect and retain many friends throughout your lifetime.",
+            21: "You are good natured, optimistic, inspirational, and generous. You are drawn to all things of beauty, quality, and entertainment, and your own creativity can put you in the limelight.",
+            22: "You exhibit extraordinary discipline, energy, logic, and sensitivity and you have the mind of a masterful, enlightened, and enterprising visionary.",
+            23: "You possess a nurturing, fun-loving, freedom-oriented spirit and your quick mind, originality and intellect steadily churns out clever and unique ideas and plans.",
+            24: 'You are charming, social, witty, and more of a lover than a fighter. Your conscientious and giving nature tends to always go "the extra mile", and you are an honorable friend and mate.',
+            25: "You are witty and wise, and you wonder about everything. Your reservoir of innate wisdom and highly compassionate, generous nature give rise to your innate sense of responsibility to humanity, in general.",
+            26: "Your personality is like that of a five-star general – steadfast and in command with a fondness for protocol. Your “sixth sense” enables you to readily intuit right from wrong and set an exemplary example for others.",
+            27: 'Like Old King Cole, you are an "old soul", and you possess vast innate knowledge and extraordinary perceptivity. Travel and change are essential to your well-being.',
+            28: "You are charming, independent, a born diplomat, and your character is that of an achiever and leader. Your high ideals and principles enable you to accomplish your goals.",
+            29: 'Your gentle, sensitive nature is complimented by a combination of energy and charisma that draws people to you like a magnet. You possess as "sixth sense" that enables you help the many who seek out your "big shoulders".',
+            30: "You are intelligent, creative, fun-loving, and blessed with a great sense of humor, and exceptionally talented when involved in any creative endeavor. Your socially adept nature enables you to stand out among the many.",
+            31: "You are creative, innovative, and possess a vast amount of knowledge. Conscientious, dependable and timely, you are also a creature of habit and can be devoted mate and friend."
+          },
+          attitude: {
+            description: "This number is most powerful in the first 30-35 years of your life and represents the how and why you react to circumstances in your youth.",
+            1: "You are born with a strong will and independent nature. You prefer to make your own choices and are stubborn when pushed in a different direction.",
+            2: "You are born to be a sweet, gentle, kind and caring child and young adult. You love to nurture and be nurtured and are perceptive and sensitive.",
+            3: "You are born somewhat shy but once you learn to speak, you can become a natural entertainer, adventuresome, and captivating.",
+            4: "You are born with a sensitive, stubborn temperament, but can be very sweet and dutiful when given praise and encouragement.",
+            5: "You are born with energy abounding! You need constant mental and physical stimulation and your temper flares when impatient.",
+            6: "You are born to be responsible, conscientious, considerate, kind and caring to everyone, especially your parents, siblings, friends, and all things of nature.",
+            7: "You are born with a brilliant mind that needs alone time to indulge your quest for knowledge and vast interests and intrigues.",
+            8: 'You are born to be exemplary in everything you do; which originates from your need to feel in control. You are the "straight A student" when encouraged.',
+            9: "You are born with a more adult-like sensibility at a very early age. Praise and encouragement from those closest to you fuel your achievements.",
+            11: "You are born super sensitive; highly intuitive, high-minded and a lover of music; sweet, gentle and cerebral when inspired, you are star material.",
+            22: "You are born with a stubborn streak but with encouragement you can be a very purposeful, enterprising, inspired and ingenious."
+          },
+          character: {
+            description: "This number represents primarily your public and social qualities, but you would also exhibit much of the same in your personal relations, too.",
+            1: "Possessing an original and innovative mind, with a steadfast focus on your goals qualifies you as a leader.",
+            2: "Being naturally diplomatic, good-natured and a peacemaker, your public persona is like that of an ambassador for the people.",
+            3: "Your optimistic, enthusiastic, and creative abilities give you the capacity to engage, inspire, and entertain others in any line of work you choose.",
+            4: "Your conscientious, organized, systematic and reliable public persona makes you a sought-after worker-bee or Chairman of the Board.",
+            5: "Your charming, articulate, flexible and style-conscious nature make you a trendsetter who can engage and inspire many when focused on a mission",
+            6: 'As a born humanitarian, community-oriented, outstanding parent/teacher/human being who always "goes the extra mile" you are an exemplary committee or cause leader.',
+            7: "As a philosophically avant-garde, knowledge-seeking genius, you don't seek the limelight but are a superlative teacher, professor, and career specialist.",
+            8: "Your commanding, exemplary teacher-of-teachers, judge/jury, producer/director persona possesses a sixth sense that enables you to readily distinguish right from wrong in anything.",
+            9: 'As a born sage, aristocratic, socially pleasing humanitarian, you gravitate toward the community that can benefit most from your "selfless server" mission.',
+            11: "As an empathetic, enlightened and understanding counselor or community leader, you belong in the limelight; the 11 is associated with fame and illumination.",
+            22: "As a high-minded builder of empires and spiritually-oriented organizer, you are best suited to help public causes and companies that appreciate your dedicated, straightforward style."
+          },
+          soul: {
+            description: "This influence presents a view of your intuitive, soulful self.",
+            1: "Your Soul's Urge is to be innovative, creative, and lead the masses to a higher realm of consciousness and understanding that engenders compassion for all.",
+            2: "Your Soul's Urge is to effect peace, harmony, and finesse to bring about greater nurturing and loving qualities in those you know and comfort.",
+            3: "Your Soul's Urge is to bring JOY, enthusiasm, passion, and arouse the imagination of others with creativity and heart-warming concepts and interests.",
+            4: "Your Soul's Urge is to deliver honesty, dependability, practicality, and determination to help others and yourself achieve inspiring and enlightening outcomes.",
+            5: "Your Soul's Urge is to use your abounding energy, broad-mindedness and progressive mental attributes to help bring forth high-minded contributions to mankind.",
+            6: "Your Soul's Urge is to be responsible, conscientious, caring and kind to one and all, and to teach, counsel, and comfort to maintain those qualities yourself.",
+            7: "Your Soul's Urge is to use your analytical, research-oriented and questioning nature to discover or uncover something meaningful that will help the many, as opposed to a few.",
+            8: "Your Soul's Urge is to bring quality, consistency and inspiration to others and to effect your natural finesse, and quality in you all touch.",
+            9: "Your Souls Urge is to use your aristocratic, gentile and humane qualities with consistency which will help to set the stage for others to emulate.",
+            11: "Your Soul's Urge is to bring peace, harmony, beauty and honorability as examples of your highest spiritual qualities for all to appreciate and hopefully imitate.",
+            22: 'Your Soul\'s Urge is that of a "Master Builder", one whose soulful desire is to help and serve mankind and the earth with high-mindedness and humanitarianism.'
+          },
+          agenda: {
+            description: "This vibration offers your innate (hidden) desires.",
+            1: "This agenda incites an innate desire to be independent, to lead, to innovate, and to create original and unique concepts and things.",
+            2: "This agenda brings forth the innate desire to live life in peace and harmony, effecting a non-aggressive, cooperative and congenial nature for all.",
+            3: "This agenda inspires an innate desire to be more creative, entertaining, and to travel the world, delivering greater pleasure and joy to all who engage with your uplifting persona.",
+            4: "This agenda entails logic, organization, and perseverance to manifest the innate needs, desires and peace of mind you harbor and hold.",
+            5: "This agenda inspires an innate desire for freedom more than anything else, along with acquiring the ability to travel and live unrestrained as much as possible.",
+            6: "This agenda has a strong innate humanitarianism focus – helping and caring for all things of the earth – humans, animals and the beautiful earth itself.",
+            7: "This agenda provokes an innate thirst for gaining knowledge associated with the sciences (esoteric or otherwise), philosophies, arts, and spirituality.",
+            8: "This agenda expresses an innate desire for power, acclaim and amassing huge amounts of money, or being an enlightened teacher of the masses.",
+            9: "This agenda affects an innate desire to attain the finest of everything from clothing and cars to entertainment, or an inordinate need to live a wholly humanitarian life without a thought for self.",
+            11: "This agenda incites an innate need to minister, counsel, or participate in the healing arts in a way that helps the many, or to become known for your humanitarian services.",
+            22: "This agenda inspires an innate desire to do something grand for mankind. This Master Number gives you the ability to scale the highest mountains or invent an exemplary product or philosophy."
+          },
+          purpose: {
+            description: "This is your farewell-performance number vibration. It is what your Soulful Self has chosen to achieve in your latter years of life.",
+            1: "Your Divine Purpose is to leave behind a legacy of something you pioneered - a concept, a product, a foundation.",
+            2: "Your Divine Purpose is to bring peace, comfort and harmony to your fellow humans.",
+            3: "Your Divine Purpose is to use your creative and imaginative talents to produce a product, an idea, a book, a film, or some other form of artful expression.",
+            4: "Your Divine Purpose is to build a stable foundation that helps people and has a humanitarian focus.",
+            5: "Your Divine Purpose is to help to effect progressive changes that make life better for future generations.",
+            6: "Your Divine Purpose is to teach, to instigate, and to help humanitarian causes, to care for home and family, and be socially responsible.",
+            7: "Your Divine Purpose is to impart the vast knowledge you have gathered in a science, an art, a philosophy, or a religion through a creative endeavor.",
+            8: "Your Divine Purpose is to lead, direct, initiate, and instigate as a leader or executive, and to help the less fortunate through philanthropy.",
+            9: "Your Divine Purpose is to be a universal humanitarian - a good parent, a good mate, and a good citizen; a philanthropist, a minister, a politician - working for the betterment of mankind.",
+            11: "Your Divine Purpose is to help people on the spiritual, psychological, and mental planes. To uplift others with words of wisdom; to listen, advise, and help others to move forward on their life's journey.",
+            22: "Your Divine Purpose is to organize and build; to maintain a business enterprise that offers work to others and helps people through service to the community and perhaps throughout the world."
+          }
         };
 
         // ==========================================
@@ -526,7 +577,6 @@
             loadData(); 
             updateUIState();
         }
-
 
         // ==========================================
         // VALIDATION LOGIC
@@ -776,19 +826,90 @@
             return { d: scores[1]*2, a: scores[2]*2, s: scores[3]*2 };
         }
 
-        function reduceNum(num) {
-            if (num === 0) return 0;
-            if (num === 11 || num === 22 || num === 33) return num; 
-            while (num > 9) {
-                if (num === 11 || num === 22 || num === 33) return num;
-                num = num.toString().split('').reduce((acc, curr) => acc + parseInt(curr), 0);
-            }
-            return num;
-        }
+        // ==========================================
+        // SALLY FAUBION NUMEROLOGY CALCULATION LOGIC
+        // ==========================================
+        const letter2number = {
+          A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, G: 7, H: 8, I: 9,
+          J: 1, K: 2, L: 3, M: 4, N: 5, O: 6, P: 7, Q: 8, R: 9,
+          S: 1, T: 2, U: 3, V: 4, W: 5, X: 6, Y: 7, Z: 8
+        };
 
-        function letterValue(char) {
-            const code = char.toLowerCase().charCodeAt(0) - 96;
-            return (code > 0 && code <= 26) ? ((code - 1) % 9) + 1 : 0;
+        const letterCV = {
+          A: 0, B: 1, C: 1, D: 1, E: 0, F: 1, G: 1, H: 1, I: 0,
+          J: 1, K: 1, L: 1, M: 1, N: 1, O: 0, P: 1, Q: 1, R: 1,
+          S: 1, T: 1, U: 0, V: 1, W: 1, X: 1, Y: 0, Z: 1
+        };
+
+        const isMasterNumber = (num) => num == "11" || num == "22";
+
+        const reduceNumber = (number) => {
+          if (number != "NaN" && number != "undefined") {
+            number = "" + number;
+            while (number.length > 1 && !isMasterNumber(number)) {
+              number = "" + number.split("").reduce((a, digit) => a + Number(digit), 0);
+            }
+          }
+          return number;
+        };
+
+        function calculateSallyFaubionNumerology(name, dobString) {
+            let m = "", d = "", y = "";
+            if (dobString) {
+                const parts = dobString.split('-');
+                y = parts[0]; m = parts[1]; d = parts[2];
+            }
+
+            const destiny = reduceNumber(m + d + y);
+            const personality = d ? parseInt(d, 10).toString() : "0";
+            const attitude = reduceNumber(m + d);
+
+            let uName = (name || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z]/g, "");
+            
+            let numAll = [], numV = [], numC = [];
+            let prevLetterCat = null;
+            
+            for (let i = 0; i < uName.length; i++) {
+                let letter = uName[i];
+                let lNum = letter2number[letter] || 0;
+                let cv = letterCV[letter];
+                
+                numAll.push(lNum);
+                const addV = () => { numV.push(lNum); prevLetterCat = 0; };
+                const addC = () => { numC.push(lNum); prevLetterCat = 1; };
+                
+                if (cv === 1) {
+                    addC();
+                } else if (cv === 0) {
+                    if (letter === "Y") {
+                        if (prevLetterCat === 1) {
+                            addV();
+                        } else if (i < uName.length - 1) {
+                            let nextLetterCat = letterCV[uName[i + 1]];
+                            if (nextLetterCat === 1) addV(); else addC();
+                        } else {
+                            addV();
+                        }
+                    } else {
+                        addV();
+                    }
+                }
+            }
+            
+            const character = reduceNumber("" + numAll.reduce((a, b) => a + b, 0));
+            const soul = reduceNumber("" + numV.reduce((a, b) => a + b, 0));
+            const agenda = reduceNumber("" + numC.reduce((a, b) => a + b, 0));
+            const purpose = reduceNumber("" + (Number(destiny) + Number(character)));
+            
+            return {
+                destiny: { num: destiny, text: numerologyMeaning.destiny[destiny] || numerologyMeaning.destiny.description },
+                character: { num: character, text: numerologyMeaning.character[character] || numerologyMeaning.character.description },
+                soul: { num: soul, text: numerologyMeaning.soul[soul] || numerologyMeaning.soul.description },
+                agenda: { num: agenda, text: numerologyMeaning.agenda[agenda] || numerologyMeaning.agenda.description },
+                personality: { num: personality, text: numerologyMeaning.personality[personality] || numerologyMeaning.personality.description },
+                attitude: { num: attitude, text: numerologyMeaning.attitude[attitude] || numerologyMeaning.attitude.description },
+                purpose: { num: purpose, text: numerologyMeaning.purpose[purpose] || numerologyMeaning.purpose.description }
+            };
         }
 
         function generateDashboard(clientData) {
@@ -813,26 +934,30 @@
             document.getElementById('res-dass-s').innerText = dass.s;
             document.getElementById('res-wemwbs').innerText = `${wem}/70`;
 
+            // Render highly specific Sally Faubion numerology results
             const dob = clientData['demo-dob'];
-            let month = 0, day = 0, year = 0;
-            if(dob) {
-                const parts = dob.split('-');
-                year = parts[0] ? parts[0].split('').reduce((a,b)=>a+parseInt(b),0) : 0;
-                month = parts[1] ? parts[1].split('').reduce((a,b)=>a+parseInt(b),0) : 0;
-                day = parts[2] ? parts[2].split('').reduce((a,b)=>a+parseInt(b),0) : 0;
-            }
-            const attitude = reduceNum(reduceNum(month) + reduceNum(day));
-            const character = reduceNum(reduceNum(month) + reduceNum(day) + reduceNum(year));
-            const cleanName = name.toLowerCase().replace(/[^a-z]/g, '');
-            const vowels = cleanName.match(/[aeiou]/g) || [];
-            const consonants = cleanName.match(/[^aeiou]/g) || [];
+            const numbers = calculateSallyFaubionNumerology(name, dob);
             
-            document.getElementById('num-destiny').innerText = reduceNum(cleanName.split('').reduce((acc, c) => acc + letterValue(c), 0)) || '?';
-            document.getElementById('num-character').innerText = character || '?';
-            document.getElementById('num-soul').innerText = reduceNum(vowels.reduce((acc, v) => acc + letterValue(v), 0)) || '?';
-            document.getElementById('num-personality').innerText = reduceNum(consonants.reduce((acc, c) => acc + letterValue(c), 0)) || '?';
-            document.getElementById('num-attitude').innerText = attitude || '?';
-            document.getElementById('num-purpose').innerText = reduceNum(parseInt(document.getElementById('num-destiny').innerText) + character) || '?';
+            document.getElementById('num-destiny').innerText = numbers.destiny.num || '?';
+            document.getElementById('desc-destiny').innerText = numbers.destiny.text;
+            
+            document.getElementById('num-character').innerText = numbers.character.num || '?';
+            document.getElementById('desc-character').innerText = numbers.character.text;
+            
+            document.getElementById('num-soul').innerText = numbers.soul.num || '?';
+            document.getElementById('desc-soul').innerText = numbers.soul.text;
+
+            document.getElementById('num-agenda').innerText = numbers.agenda.num || '?';
+            document.getElementById('desc-agenda').innerText = numbers.agenda.text;
+
+            document.getElementById('num-personality').innerText = numbers.personality.num || '?';
+            document.getElementById('desc-personality').innerText = numbers.personality.text;
+
+            document.getElementById('num-attitude').innerText = numbers.attitude.num || '?';
+            document.getElementById('desc-attitude').innerText = numbers.attitude.text;
+
+            document.getElementById('num-purpose').innerText = numbers.purpose.num || '?';
+            document.getElementById('desc-purpose').innerText = numbers.purpose.text;
 
             const ctx = document.getElementById('resultsChart').getContext('2d');
             if(window.resultsChartInstance) window.resultsChartInstance.destroy();
