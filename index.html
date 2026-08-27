@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghazali Clinical Diagnostics | Intake Protocol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Vanta.js Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            background-color: #F7F5F2; 
+            background-image: 
+                radial-gradient(at 40% 20%, rgba(71, 147, 117, 0.15) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, rgba(203, 213, 225, 0.3) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, rgba(71, 147, 117, 0.1) 0px, transparent 50%),
+                radial-gradient(at 80% 50%, rgba(247, 245, 242, 1) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(203, 213, 225, 0.2) 0px, transparent 50%),
+                radial-gradient(at 80% 100%, rgba(71, 147, 117, 0.1) 0px, transparent 50%),
+                radial-gradient(at 0% 0%, rgba(247, 245, 242, 1) 0px, transparent 50%);
+            background-size: 200% 200%;
+            animation: breathingGradient 15s ease infinite;
+            color: #334155; 
+            font-family: 'Nunito', sans-serif; 
+            min-height: 100vh;
+        }
+
+        @keyframes breathingGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .glass-panel { 
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5); 
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .step-section { display: none; opacity: 0; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(15px); }
+        .step-section.active { display: block; opacity: 1; transform: translateY(0); }
+        textarea { resize: none; overflow: hidden; min-height: 100px; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        textarea:focus, input[type="text"]:focus, input[type="date"]:focus, input[type="tel"]:focus, select:focus {
+            box-shadow: 0 0 0 3px rgba(71, 147, 117, 0.15);
+        }
+        .calm-radio:checked + div {
+            background-color: #ECFDF5;
+            border-color: #10B981;
+            color: #047857;
+            font-weight: 600;
+        }
+        #vanta-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; opacity: 0.4; pointer-events: none;
+        }
+
+        .client-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .error-highlight { transition: all 0.3s ease; }
+
+        @media print {
+            body { background: white; color: black; }
+            .glass-panel { border: none; box-shadow: none; padding: 0; background: white; }
+            .no-print, #vanta-bg { display: none !important; }
+            canvas { max-width: 100% !important; }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex justify-center items-start md:items-center">
+
+    <div id="vanta-bg"></div>
+
+    <div id="validation-toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full opacity-0 pointer-events-none transition-opacity duration-300 z-50 flex items-center gap-3 shadow-lg">
+        <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        <span class="font-semibold text-sm" id="toast-text" data-en="Please complete all fields to continue." data-ur="Baraye meharbani aage barhne ke liye tamam sawalaat ke jawab dein.">Please complete all fields to continue.</span>
+    </div>
+
+    <div class="glass-panel w-full max-w-4xl rounded-[2rem] p-6 md:p-12 relative mt-4 mb-12 overflow-hidden">
+        
+        <!-- Header & Progress -->
+        <div class="no-print" id="header-bar">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-slate-100/50">
+                <div id="progress-bar" class="h-full bg-[#479375] transition-all duration-700 ease-out w-0 rounded-r-full"></div>
+            </div>
+            
+            <div class="flex justify-between items-center mb-10 pt-4 border-b border-slate-100 pb-6">
+                <div class="flex items-center gap-4">
+                    <img src="Creative Brain and Light Bulb Logo Template - 1.png" alt="Counselor Pakistan Logo" class="h-12 w-auto object-contain">
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight text-slate-800">Muhammad Junaid Ghazali</h1>
+                        <p class="text-slate-500 text-sm">Licensed Clinical Psychologist (MPhil)</p>
+                    </div>
+                </div>
+                <div class="text-right flex items-center gap-4 hidden sm:flex">
+                    <button onclick="toggleLanguage()" id="lang-btn" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full text-xs font-bold transition-colors">
+                        Roman Urdu Mode
+                    </button>
+                    <div>
+                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider i18n-text" id="progress-text" data-en="0% Complete" data-ur="0% Mukammal">0% Complete</div>
+                        <div class="text-[10px] text-[#479375] mt-1 opacity-0 transition-opacity font-semibold i18n-text" id="save-status" data-en="Saved securely" data-ur="Data mehfooz ho gaya">Saved securely</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- CORE: DEMOGRAPHICS -->
+        <!-- ========================================== -->
+        <div id="step-demographics" class="step-section active">
+            <h2 class="text-3xl font-bold text-slate-800 mb-3 i18n-text" data-en="Welcome to my practice." data-ur="Mere clinic mein khush aamdeed.">Welcome to my practice.</h2>
+            <p class="text-slate-500 mb-10 text-lg leading-relaxed i18n-text" data-en="Modern psychology requires more than just listening. It requires precision. Please provide a few details to get started. Your data will be securely transmitted to our clinical database upon completion." data-ur="Jadeed psychology sirf sunne se aage ki cheez hai, isme darustagi (precision) zaroori hai. Shuru karne ke liye chand tafseelat faraham karein. Aap ka data mukammal tor par secure aur mehfooz rahega.">Modern psychology requires more than just listening. It requires precision. Please provide a few details to get started. Your data will be securely transmitted to our clinical database upon completion.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-600 mb-2 i18n-text" data-en="Full Legal Name" data-ur="Mukammal Naam">Full Legal Name</label>
+                    <input type="text" id="demo-name" class="save-target error-highlight w-full bg-white border border-slate-200 rounded-2xl p-4 text-slate-800 focus:outline-none focus:border-[#479375] transition-all">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-600 mb-2 i18n-text" data-en="Date of Birth" data-ur="Tareekh-e-Paidaish">Date of Birth</label>
+                    <input type="date" id="demo-dob" class="save-target error-highlight w-full bg-white border border-slate-200 rounded-2xl p-4 text-slate-800 focus:outline-none focus:border-[#479375] transition-all">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-600 mb-2 i18n-text" data-en="Gender Identity" data-ur="Jins (Gender)">Gender Identity</label>
+                    <select id="demo-gender" class="save-target error-highlight w-full bg-white border border-slate-200 rounded-2xl p-4 text-slate-800 focus:outline-none focus:border-[#479375] transition-all appearance-none cursor-pointer">
+                        <option value="" class="i18n-text" data-en="Select..." data-ur="Muntakhib karein...">Select...</option>
+                        <option value="Male" class="i18n-text" data-en="Male" data-ur="Mard">Male</option>
+                        <option value="Female" class="i18n-text" data-en="Female" data-ur="Aurat">Female</option>
+                        <option value="Non-binary" class="i18n-text" data-en="Non-binary" data-ur="Khawaja Sira / Digar">Non-binary</option>
+                        <option value="Prefer not to say" class="i18n-text" data-en="Prefer not to say" data-ur="Batana pasand nahi karunga">Prefer not to say</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-600 mb-2 i18n-text" data-en="Contact Number" data-ur="Rabta / Phone Number">Contact Number</label>
+                    <input type="tel" id="demo-contact" class="save-target error-highlight w-full bg-white border border-slate-200 rounded-2xl p-4 text-slate-800 focus:outline-none focus:border-[#479375] transition-all">
+                </div>
+            </div>
+        </div>
+
+        <div id="qualitative-container"></div>
+        <div id="quantitative-container"></div>
+
+        <!-- ========================================== -->
+        <!-- CLIENT VIEW: BOOKING PAGE -->
+        <!-- ========================================== -->
+        <div id="step-booking" class="step-section text-center py-16">
+            <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-[#ECFDF5] mb-8 shadow-sm border border-white">
+                <svg class="w-12 h-12 text-[#10B981]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <h2 class="text-4xl font-bold text-slate-800 mb-4 i18n-text" data-en="Your profile is ready." data-ur="Aap ki profile tayyar hai.">Your profile is ready.</h2>
+            <p class="text-slate-500 mb-10 max-w-lg mx-auto text-lg leading-relaxed i18n-text" data-en="Thank you for sharing your experience. Your clinical profile has been securely submitted. Schedule your online or in-person session below to begin building an evidence-based action plan." data-ur="Apne tajarbaat share karne ka shukriya. Aap ka clinical data mehfooz kar liya gaya hai. Ek mu-assir action plan banane ke liye apna online ya in-person session neechay diye gaye link se book karein.">Thank you for sharing your experience. Your clinical profile has been securely submitted. Schedule your online or in-person session below to begin building an evidence-based action plan.</p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="https://wa.me/+923355594054" target="_blank" rel="noopener noreferrer" class="inline-flex justify-center items-center gap-3 px-8 py-4 bg-[#25D366] hover:bg-[#1DA851] text-white rounded-full font-bold text-lg transition-all shadow-lg transform hover:-translate-y-0.5">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.015c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                    <span class="i18n-text" data-en="Schedule via WhatsApp" data-ur="WhatsApp se book karein">Schedule via WhatsApp</span>
+                </a>
+                <a href="https://muhammadjunaidghazali.github.io/Portfolio/" target="_blank" rel="noopener noreferrer" class="inline-flex justify-center items-center gap-3 px-8 py-4 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-full font-bold text-lg transition-all shadow-sm transform hover:-translate-y-0.5 i18n-text" data-en="View Credentials" data-ur="Credentials Dekhein">
+                    View Credentials
+                </a>
+            </div>
+
+            <div id="clinician-lock" class="fixed bottom-6 right-6 opacity-0 hover:opacity-30 transition-opacity cursor-pointer p-4 bg-transparent">
+                <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- CLINICIAN DASHBOARDS (Left as EN only)   -->
+        <!-- ========================================== -->
+        <div id="step-admin-list" class="step-section">
+            <div class="flex justify-between items-end mb-10 border-b border-slate-100 pb-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-800 mb-2">Patient Files</h2>
+                    <p class="text-slate-500 font-semibold text-sm">Select a file to review detailed psychometric telemetry.</p>
+                </div>
+            </div>
+            <div id="client-list-container" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+                <p class="text-center text-slate-400 italic py-8">Fetching securely from database...</p>
+            </div>
+        </div>
+
+        <div id="step-results" class="step-section">
+            <div class="flex justify-between items-end mb-10 border-b border-slate-100 pb-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-800 mb-2">Ghazali Secure Portal</h2>
+                    <p class="text-[#479375] font-semibold text-sm" id="patient-summary">Processing complete.</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="document.getElementById('step-results').classList.remove('active'); document.getElementById('step-admin-list').classList.add('active');" class="no-print px-5 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-full font-bold transition-all text-sm shadow-sm hover:bg-slate-50">
+                        &larr; Back to Files
+                    </button>
+                    <button id="btn-print" class="no-print px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full font-bold transition-all flex items-center gap-2 text-sm shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                        Print Report
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <!-- Data layout same as previous (left in English as it's for the clinician) -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-400 mb-5 tracking-widest uppercase">Psychometric Telemetry</h3>
+                    <div class="space-y-4">
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 flex justify-between items-center shadow-sm">
+                            <div><h3 class="text-slate-800 font-bold">PHQ-9 (Depression)</h3><p class="text-sm font-semibold text-slate-500 mt-1" id="sev-phq9"></p></div>
+                            <div class="text-2xl font-bold text-[#479375]" id="res-phq9">0/27</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 flex justify-between items-center shadow-sm">
+                            <div><h3 class="text-slate-800 font-bold">GAD-7 (Anxiety)</h3><p class="text-sm font-semibold text-slate-500 mt-1" id="sev-gad7"></p></div>
+                            <div class="text-2xl font-bold text-[#479375]" id="res-gad7">0/21</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                            <h3 class="text-slate-800 font-bold mb-4">DASS-21 (Distress Breakdown)</h3>
+                            <div class="grid grid-cols-3 gap-3 text-center">
+                                <div class="bg-slate-50 rounded-2xl p-3 border border-slate-100"><span class="text-xs font-semibold text-slate-400 block uppercase mb-1">Depression</span><span id="res-dass-d" class="text-xl font-bold text-slate-700">0</span></div>
+                                <div class="bg-slate-50 rounded-2xl p-3 border border-slate-100"><span class="text-xs font-semibold text-slate-400 block uppercase mb-1">Anxiety</span><span id="res-dass-a" class="text-xl font-bold text-slate-700">0</span></div>
+                                <div class="bg-slate-50 rounded-2xl p-3 border border-slate-100"><span class="text-xs font-semibold text-slate-400 block uppercase mb-1">Stress</span><span id="res-dass-s" class="text-xl font-bold text-slate-700">0</span></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 flex justify-between items-center shadow-sm">
+                            <h3 class="text-slate-800 font-bold">WEMWBS (Flourishing)</h3><div class="text-2xl font-bold text-[#479375]" id="res-wemwbs">0/70</div>
+                        </div>
+                    </div>
+                    <div class="mt-6 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm h-64 flex justify-center items-center">
+                        <canvas id="resultsChart"></canvas>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xs font-bold text-slate-400 mb-5 tracking-widest uppercase flex justify-between">
+                        Motivational Numerology <span class="text-[10px] text-slate-400 normal-case tracking-normal font-normal">Based on Sally Faubion</span>
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100 shadow-sm">
+                            <div class="flex justify-between items-baseline mb-2"><h4 class="text-amber-800 font-bold">Destiny (Expression)</h4><span class="text-2xl text-amber-600 font-bold" id="num-destiny">?</span></div>
+                            <p class="text-sm text-amber-700/80 leading-relaxed">Most influential number regarding personal motivations, environment preferences, and career aspirations.</p>
+                        </div>
+                        <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100 shadow-sm">
+                            <div class="flex justify-between items-baseline mb-2"><h4 class="text-amber-800 font-bold">Character (Life Path)</h4><span class="text-2xl text-amber-600 font-bold" id="num-character">?</span></div>
+                            <p class="text-sm text-amber-700/80 leading-relaxed">Represents public and social qualities, as well as behavior in personal relations.</p>
+                        </div>
+                        <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100 shadow-sm">
+                            <div class="flex justify-between items-baseline mb-2"><h4 class="text-amber-800 font-bold">Soul Urge (Heart's Desire)</h4><span class="text-2xl text-amber-600 font-bold" id="num-soul">?</span></div>
+                            <p class="text-sm text-amber-700/80 leading-relaxed">Presents a view of the intuitive, soulful self and internal motivations.</p>
+                        </div>
+                        <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100 shadow-sm">
+                            <div class="flex justify-between items-baseline mb-2"><h4 class="text-amber-800 font-bold">Personality</h4><span class="text-2xl text-amber-600 font-bold" id="num-personality">?</span></div>
+                            <p class="text-sm text-amber-700/80 leading-relaxed">Describes the behind-the-scenes or private self.</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100 shadow-sm text-center">
+                                <h4 class="text-amber-800 font-bold text-sm mb-1">Attitude</h4><span class="text-3xl text-amber-600 font-bold" id="num-attitude">?</span>
+                            </div>
+                            <div class="bg-amber-50/50 p-5 rounded-3xl border border-amber-100 shadow-sm text-center">
+                                <h4 class="text-amber-800 font-bold text-sm mb-1">Divine Purpose</h4><span class="text-3xl text-amber-600 font-bold" id="num-purpose">?</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Footer -->
+        <div class="no-print mt-12 pt-8 border-t border-slate-100 flex justify-between items-center" id="nav-footer">
+            <button id="btn-back" class="px-6 py-3 text-slate-400 hover:text-slate-700 font-bold transition-colors invisible flex items-center gap-2 i18n-text" data-en="Back" data-ur="Peechay">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
+                Back
+            </button>
+            <button id="btn-next" class="px-8 py-3.5 bg-[#479375] hover:bg-[#38785e] text-white rounded-full font-bold transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 i18n-text" data-en="Continue" data-ur="Aage Barhein">
+                Continue
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxwvJxARJBdTSXyNYy9YSJPYoC9jl-FWFDJWD7YzNfFcpqDmgqVqJfvdw-bMx3fkiAU/exec';
+        let currentLang = 'en';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                VANTA.FOG({ el: "#vanta-bg", mouseControls: true, touchControls: true, minHeight: 200, minWidth: 200, highlightColor: 0xe2e8f0, midtoneColor: 0x479375, lowlightColor: 0xf7f5f2, baseColor: 0xf7f5f2, blurFactor: 0.85, speed: 0.50, zoom: 1.50 });
+            } catch(e) {}
+        });
+
+        // ==========================================
+        // BILINGUAL DATA STRUCTURES
+        // ==========================================
+        const qualSteps = [
+            { id: 1, 
+              en: { title: "Physical Well-being", objective: "Understanding physical signs helps us map where tension is held in your body.", q1: "Where do you feel stress or tension most in your body right now?", q2: "How have your sleep, appetite, or energy levels changed recently?" },
+              ur: { title: "Jismani Sehat", objective: "Jismani alamaat samajhne se humein maloom hota hai ke tension kahan hai.", q1: "Aap is waqt apne jism mein sab se zyada stress ya khichao kahan mehsoos karte hain?", q2: "Haal hi mein aap ki neend, bhook, ya energy levels mein kya tabdeeli aayi hai?" }
+            },
+            { id: 2, 
+              en: { title: "Daily Routine", objective: "Exploring how deeply these feelings might be disrupting your day-to-day life.", q1: "How is this affecting your ability to handle daily routines, work, or studies?", q2: "Have you found yourself avoiding social gatherings or friends lately?" },
+              ur: { title: "Rozmara ki Routine", objective: "Yeh janna zaroori hai ke in ahsasaat se aap ki rozmara zindagi kitni mutassir ho rahi hai.", q1: "Yeh aap ke rozmara ke kamo, kaam, ya padhai ko kis tarah mutassir kar raha hai?", q2: "Kya aap ne haal hi mein logon se milna julna ya doston se doori ikhtiyar ki hai?" }
+            },
+            { id: 3, 
+              en: { title: "Family Context", objective: "Acknowledging the deep importance of family roles and expectations.", q1: "How are things going at home with your family or household right now?", q2: "What expectations do family members have of you, and how are you managing them?" },
+              ur: { title: "Ghar aur Khandan", objective: "Khandan aur ghar walon ki ahmiyat aur asraat ko samajhna.", q1: "Ghar par khandan walon ke sath halaat kaise chal rahe hain?", q2: "Ghar walon ko aap se kya umeedein hain, aur aap unhein kaise manage kar rahe hain?" }
+            },
+            { id: 4, 
+              en: { title: "Life Changes", objective: "Pinpointing external stressors like financial issues or major life transitions.", q1: "Have there been any major changes, pressures, or difficulties in your environment recently?", q2: "Looking back, was there a specific event when these difficulties started getting worse?" },
+              ur: { title: "Zindagi mein Tabdeeliyan", objective: "Bahar ke masail jaise maali pareshaniyan ya zindagi ki badi tabdeeliyan.", q1: "Kya haal hi mein aap ke ird-gird mahol ya maali halaat mein koi badi tabdeeli ya mushkil aayi hai?", q2: "Agar aap peechay mud kar dekhein, toh kya koi aesa waqiya tha jab se yeh mushkilat barhna shuru huin?" }
+            },
+            { id: 5, 
+              en: { title: "Meaning & Faith", objective: "Discovering what you believe is the cause, acknowledging ties to personal faith.", q1: "What do you feel is the main reason or cause behind these problems?", q2: "How do your beliefs, prayers, or faith help you cope with this situation?" },
+              ur: { title: "Aqeedah aur Soch", objective: "Aap ke khayal mein is maslay ki wajah aur aap ke aqeeday ka asar.", q1: "Aap ke khayal mein in pareshaniyon ki asal wajah kya hai?", q2: "Aap ka aqeedah, ibadat, ya imaan is soorat-e-haal ka samna karne mein aap ki kaise madad karta hai?" }
+            },
+            { id: 6, 
+              en: { title: "Internal Thoughts", objective: "A safe space to uncover deeper emotional struggles.", q1: "Inside yourself, what is the heaviest emotion or thought you are carrying right now?", q2: "If you could safely change one thing about your current life situation, what would it be?" },
+              ur: { title: "Androoni Soch", objective: "Ek mehfooz jagah jahan aap apne andar ke gehre jazbaat share kar sakein.", q1: "Apne andar, aap is waqt kis sab se bhari jazbe ya soch ka bojh uthaye hue hain?", q2: "Agar aap apni maujooda zindagi mein kisi ek cheez ko bina kisi darr ke tabdeel kar sakein, toh woh kya hogi?" }
+            }
+        ];
+
+        const phq9_qs = [
+            {en: "Little interest or pleasure in doing things", ur: "Kamon mein dil na lagna ya maza na aana"}, 
+            {en: "Feeling down, depressed, or hopeless", ur: "Udaas, pareshan, ya na-umeed mehsoos karna"}, 
+            {en: "Trouble falling or staying asleep", ur: "Neend aane mein masla ya bohut zyada sona"}, 
+            {en: "Feeling tired or having little energy", ur: "Thakaawat mehsoos karna ya energy kam lagna"}, 
+            {en: "Poor appetite or overeating", ur: "Bhook na lagna ya bohut zyada khana"}, 
+            {en: "Feeling bad about yourself", ur: "Apne bare mein bura mehsoos karna"}, 
+            {en: "Trouble concentrating on things", ur: "Cheezon par tawajjo dene (concentrate) mein masla"}, 
+            {en: "Moving or speaking slowly, or being restless", ur: "Aahista bolna/chalna, ya phir bohut bechain rehna"}, 
+            {en: "Thoughts that you would be better off dead", ur: "Aise khayalat aana ke aap mar jayein toh behtar hai"}
+        ];
+        const gad7_qs = [
+            {en: "Feeling nervous, anxious or on edge", ur: "Ghabrahat, bechaini, ya tension mehsoos karna"}, 
+            {en: "Not being able to stop or control worrying", ur: "Fikar karne se khud ko rok na paana"}, 
+            {en: "Worrying too much about different things", ur: "Mukhtalif cheezon ke baare mein hadd se fikar karna"}, 
+            {en: "Trouble relaxing", ur: "Pur-sukoon hone mein masla aana"}, 
+            {en: "Being so restless that it is hard to sit still", ur: "Itni bechaini hona ke ek jagah tik kar baithna mushkil ho"}, 
+            {en: "Becoming easily annoyed or irritable", ur: "Choti baaton par chirchida-pan ya gussa aana"}, 
+            {en: "Feeling afraid as if something awful might happen", ur: "Khauf mehsoos karna jaise kuch bura hone wala hai"}
+        ];
+        const standard_opts = {
+            en: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
+            ur: ["Bilkul nahi", "Kuch din", "Aadhe se zyada din", "Taqreeban har roz"]
+        };
+
+        const dass21_qs = [
+            {type: 3, en: "I found it hard to wind down", ur: "Mujhe pur-sukoon hone mein mushkil hui"}, 
+            {type: 2, en: "I was aware of dryness of my mouth", ur: "Mujhe apne moonh ka sookhna mehsoos hua"}, 
+            {type: 1, en: "I couldn't seem to experience any positive feeling at all", ur: "Mujhe koi musbat (positive) ehsaas nahi ho raha tha"}, 
+            {type: 2, en: "I experienced breathing difficulty", ur: "Mujhe saans lene mein dushwari hui"}, 
+            {type: 1, en: "I found it difficult to work up the initiative to do things", ur: "Kisi kaam ki shuruaat karne mein mushkil lag rahi thi"}, 
+            {type: 3, en: "I tended to over-react to situations", ur: "Main har baat par hadd se zyada react kar raha tha"}, 
+            {type: 2, en: "I experienced trembling", ur: "Mujhe jism mein kapkapi mehsoos hui"}, 
+            {type: 3, en: "I felt that I was using a lot of nervous energy", ur: "Mujhe laga meri bechaini mein energy zaya ho rahi hai"}, 
+            {type: 2, en: "I was worried about situations in which I might panic", ur: "Main aisi soorathal se darta tha jahan mujhe panic ho"}, 
+            {type: 1, en: "I felt that I had nothing to look forward to", ur: "Mujhe laga meri zindagi mein agay kuch acha nahi hai"}, 
+            {type: 3, en: "I found myself getting agitated", ur: "Main khud ko bechain aur chirchida mehsoos kar raha tha"}, 
+            {type: 3, en: "I found it difficult to relax", ur: "Mujhe relax karne mein mushkil pesh aa rahi thi"}, 
+            {type: 1, en: "I felt down-hearted and blue", ur: "Main udaas aur mayoos feel kar raha tha"}, 
+            {type: 3, en: "I was intolerant of anything that kept me from getting on", ur: "Kaam mein rukawat banne wali har cheez par gussa tha"}, 
+            {type: 2, en: "I felt I was close to panic", ur: "Mujhe laga jaise mujhe panic attack aane wala hai"}, 
+            {type: 1, en: "I was unable to become enthusiastic about anything", ur: "Mera kisi bhi cheez mein josh ya dilchaspi nahi thi"}, 
+            {type: 1, en: "I felt I wasn't worth much as a person", ur: "Mujhe apni koi qeemat ya ahmiyat mehsoos nahi hui"}, 
+            {type: 3, en: "I felt that I was rather touchy", ur: "Main choti choti baaton par hassas (touchy) ho raha tha"}, 
+            {type: 2, en: "I was aware of the action of my heart without physical exertion", ur: "Bina thakawat ke mujhe apni dil ki dharkan taiz lagi"}, 
+            {type: 2, en: "I felt scared without any good reason", ur: "Main bina kisi waja ke dara hua tha"}, 
+            {type: 1, en: "I felt that life was meaningless", ur: "Mujhe zindagi bilkul be-maqsad lag rahi thi"}
+        ];
+        const dass_opts = {
+            en: ["Did not apply to me", "Applied to some degree", "Applied considerably", "Applied very much"],
+            ur: ["Mujh par lagoo nahi hua", "Thoda bohut lagoo hua", "Kafi hadd tak lagoo hua", "Bohut zyada lagoo hua"]
+        };
+
+        const wemwbs_qs = [
+            {en: "I've been feeling optimistic about the future", ur: "Main mustaqbil (future) ke bare mein pur-umeed raha hoon"}, 
+            {en: "I've been feeling useful", ur: "Mujhe laga ke main faida-mand hoon"}, 
+            {en: "I've been feeling relaxed", ur: "Main pur-sukoon (relaxed) raha hoon"}, 
+            {en: "I've been feeling interested in other people", ur: "Mujhe dusre logon mein dilchaspi rahi hai"}, 
+            {en: "I've had energy to spare", ur: "Mujhe apne andar kafi energy mehsoos hui"}, 
+            {en: "I've been dealing with problems well", ur: "Main masail ko achi tarah handle kar raha hoon"}, 
+            {en: "I've been thinking clearly", ur: "Main bilkul saaf soch samajh pa raha hoon"}, 
+            {en: "I've been feeling good about myself", ur: "Main apne bare mein acha mehsoos kar raha hoon"}, 
+            {en: "I've been feeling close to other people", ur: "Mujhe logon se apna-pan mehsoos hua hai"}, 
+            {en: "I've been feeling confident", ur: "Main pur-aitmaad (confident) raha hoon"}, 
+            {en: "I've been able to make up my own mind", ur: "Main apne faislay khud kar pa raha hoon"}, 
+            {en: "I've been feeling loved", ur: "Mujhe mehsoos hua ke log mujhse pyar karte hain"}, 
+            {en: "I've been interested in new things", ur: "Mujhe nayi cheezon mein dilchaspi ho rahi hai"}, 
+            {en: "I've been feeling cheerful", ur: "Main khush-mizaaj raha hoon"}
+        ];
+        const wemwbs_opts = {
+            en: ["None of the time", "Rarely", "Some of the time", "Often", "All of the time"],
+            ur: ["Kabhi nahi", "Bohat kam", "Kabhi kabhi", "Aksar", "Hamesha"]
+        };
+
+        // ==========================================
+        // UI GENERATORS
+        // ==========================================
+        function buildQualitativeUI() {
+            let html = '';
+            qualSteps.forEach((s) => {
+                const text = s[currentLang];
+                html += `
+                <div id="step-qual-${s.id}" class="step-section">
+                    <p class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest i18n-text" data-en="Section ${s.id} of 6" data-ur="Hissa ${s.id} of 6">Section ${s.id} of 6</p>
+                    <h2 class="text-3xl font-bold text-slate-800 mb-3">${text.title}</h2>
+                    <p class="text-slate-500 mb-8 text-lg leading-relaxed">${text.objective}</p>
+                    <div class="space-y-8">
+                        <div>
+                            <label class="block text-lg font-semibold text-slate-700 mb-3">${text.q1}</label>
+                            <textarea id="q${s.id}-1" class="save-target error-highlight auto-resize w-full bg-white border border-slate-200 rounded-3xl p-5 text-slate-800 focus:outline-none focus:border-[#479375] shadow-sm"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-lg font-semibold text-slate-700 mb-3">${text.q2}</label>
+                            <textarea id="q${s.id}-2" class="save-target error-highlight auto-resize w-full bg-white border border-slate-200 rounded-3xl p-5 text-slate-800 focus:outline-none focus:border-[#479375] shadow-sm"></textarea>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('qualitative-container').innerHTML = html;
+        }
+
+        function renderScale(containerHtmlId, prefix, titleEn, titleUr, num, questions, optionsObj, startIndex = 0) {
+            let options = optionsObj[currentLang];
+            let html = `
+            <div id="step-${prefix}" class="step-section">
+                <p class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest i18n-text" data-en="Check-in ${num} of 4" data-ur="Check-in ${num} of 4">Check-in ${num} of 4</p>
+                <h2 class="text-3xl font-bold text-slate-800 mb-8">${currentLang === 'en' ? titleEn : titleUr}</h2>
+                <div class="space-y-8 mb-8">`;
+            
+            questions.forEach((q, idx) => {
+                const qText = q[currentLang];
+                html += `<div class="radio-group-container error-highlight">
+                    <p class="text-slate-700 font-semibold text-lg mb-4">${idx + 1}. ${qText}</p>
+                    <div class="grid grid-cols-2 md:grid-cols-${options.length} gap-3">`;
+                options.forEach((opt, oIdx) => {
+                    const val = startIndex + oIdx;
+                    const inputId = `${prefix}_${idx}_${val}`;
+                    html += `
+                    <label class="relative cursor-pointer">
+                        <input type="radio" id="${inputId}" name="${prefix}_${idx}" value="${val}" class="calm-radio sr-only save-target-radio">
+                        <div class="h-full bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-600 rounded-2xl p-4 text-center transition-all text-sm flex items-center justify-center">
+                            ${opt}
+                        </div>
+                    </label>`;
+                });
+                html += `</div></div>`;
+                if(idx < questions.length -1) html += `<hr class="border-slate-100 my-8">`;
+            });
+            html += `</div></div>`;
+            document.getElementById(containerHtmlId).innerHTML += html;
+        }
+
+        function rebuildScales() {
+            document.getElementById('quantitative-container').innerHTML = '';
+            renderScale('quantitative-container', 'phq', 'Over the last 2 weeks, how often have you been bothered by:', 'Pichle 2 hafton mein, aap ko in masail ne kitni dafa pareshan kiya hai:', 1, phq9_qs, standard_opts, 0);
+            renderScale('quantitative-container', 'gad', 'Over the last 2 weeks, how often have you felt:', 'Pichle 2 hafton mein, aap ne kitni dafa yeh mehsoos kiya:', 2, gad7_qs, standard_opts, 0);
+            renderScale('quantitative-container', 'das', 'Please select how much these applied to you over the past week:', 'Pichle ek hafte mein yeh baatein aap par kitni lagoo huin:', 3, dass21_qs, dass_opts, 0);
+            renderScale('quantitative-container', 'wem', 'Choose the answer that best describes your experience over the last 2 weeks:', 'Pichle 2 hafton ke tajarbe ke mutabiq behtareen jawab chunein:', 4, wemwbs_qs, wemwbs_opts, 1);
+            
+            // Re-apply active class to current step if it was a scale
+            if (currentIndex > 0 && currentIndex < sequence.length - 1) {
+                const currentStepId = sequence[currentIndex];
+                const el = document.getElementById(currentStepId);
+                if(el) el.classList.add('active');
+            }
+        }
+
+        // ==========================================
+        // LANGUAGE TOGGLE
+        // ==========================================
+        function toggleLanguage() {
+            saveDataLocally(); // Save everything before rebuilding UI
+            currentLang = currentLang === 'en' ? 'ur' : 'en';
+            
+            // Update button text
+            document.getElementById('lang-btn').innerText = currentLang === 'en' ? 'Roman Urdu Mode' : 'English Mode';
+            
+            // Update static elements
+            document.querySelectorAll('.i18n-text').forEach(el => {
+                if(el.tagName === 'OPTION') {
+                    el.text = el.getAttribute(`data-${currentLang}`);
+                } else {
+                    // Preserve any inner span structures if needed, otherwise standard text replace
+                    el.innerText = el.getAttribute(`data-${currentLang}`);
+                }
+            });
+
+            // Rebuild dynamic forms
+            buildQualitativeUI();
+            rebuildScales();
+            
+            // Re-bind listeners for new textareas
+            document.querySelectorAll('.auto-resize').forEach(textarea => {
+                textarea.addEventListener('input', function() {
+                    this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px';
+                });
+            });
+
+            loadData(); // Restore user inputs into the new translated fields
+        }
+
+
+        // ==========================================
+        // VALIDATION LOGIC
+        // ==========================================
+        function validateCurrentStep() {
+            if(sequence[currentIndex] === 'step-booking' || currentIndex > 10) return true;
+
+            const currentSection = document.getElementById(sequence[currentIndex]);
+            let isValid = true;
+            let firstInvalid = null;
+
+            const inputs = currentSection.querySelectorAll('input[type="text"], input[type="date"], input[type="tel"], select, textarea');
+            inputs.forEach(input => {
+                if (input.classList.contains('save-target')) {
+                    if (!input.value || input.value.trim() === '') {
+                        isValid = false;
+                        input.classList.remove('border-slate-200');
+                        input.classList.add('border-red-400', 'bg-red-50');
+                        if (!firstInvalid) firstInvalid = input;
+                    }
+                }
+            });
+
+            const radios = currentSection.querySelectorAll('input[type="radio"].save-target-radio');
+            const radioNames = new Set();
+            radios.forEach(r => radioNames.add(r.name));
+
+            radioNames.forEach(name => {
+                const checked = currentSection.querySelector(`input[name="${name}"]:checked`);
+                const firstRadio = currentSection.querySelector(`input[name="${name}"]`);
+                const container = firstRadio.closest('.radio-group-container');
+                
+                if (!checked) {
+                    isValid = false;
+                    if(container) {
+                        container.classList.add('border-l-4', 'border-red-400', 'pl-4', '-ml-4');
+                        if (!firstInvalid) firstInvalid = container;
+                    }
+                } else if(container) {
+                    container.classList.remove('border-l-4', 'border-red-400', 'pl-4', '-ml-4');
+                }
+            });
+
+            if (!isValid && firstInvalid) {
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const toast = document.getElementById('validation-toast');
+                toast.classList.remove('opacity-0');
+                setTimeout(() => { toast.classList.add('opacity-0'); }, 3000);
+            }
+
+            return isValid;
+        }
+
+        // ==========================================
+        // LOCAL STORAGE & DATA SUBMISSION
+        // ==========================================
+        function saveDataLocally() {
+            const data = {};
+            document.querySelectorAll('input.save-target, textarea.save-target, select.save-target').forEach(el => { 
+                if(el.id) data[el.id] = el.value; 
+            });
+            document.querySelectorAll('input[type="radio"].save-target-radio:checked').forEach(el => { 
+                data[el.name] = el.value; 
+            });
+            try { localStorage.setItem('aura_intake_data', JSON.stringify(data)); } catch(e) {}
+            
+            const status = document.getElementById('save-status');
+            if(status) { status.style.opacity = '1'; setTimeout(() => { status.style.opacity = '0'; }, 2000); }
+            return data;
+        }
+
+        function loadData() {
+            let raw = null;
+            try { raw = localStorage.getItem('aura_intake_data'); } catch(e) {}
+            if(!raw) return;
+            const data = JSON.parse(raw);
+            
+            document.querySelectorAll('input.save-target, textarea.save-target, select.save-target').forEach(el => {
+                if(el.id && data[el.id]) el.value = data[el.id];
+            });
+            document.querySelectorAll('input[type="radio"].save-target-radio').forEach(el => {
+                if(data[el.name] === el.value) el.checked = true;
+            });
+        }
+
+        function submitToDatabase() {
+            const data = saveDataLocally();
+            if(!SCRIPT_URL) return;
+            fetch(SCRIPT_URL, {
+                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).catch(error => console.error('Error securely transmitting data.'));
+        }
+
+        // Clear error highlighting instantly when user types or selects an answer
+        document.addEventListener('change', (e) => { 
+            if(e.target.classList.contains('save-target')) {
+                e.target.classList.remove('border-red-400', 'bg-red-50'); e.target.classList.add('border-slate-200');
+                saveDataLocally(); 
+            } else if (e.target.classList.contains('save-target-radio')) {
+                const container = e.target.closest('.radio-group-container');
+                if(container) container.classList.remove('border-l-4', 'border-red-400', 'pl-4', '-ml-4');
+                saveDataLocally();
+            }
+        });
+
+        // ==========================================
+        // NAVIGATION ENGINE
+        // ==========================================
+        const sequence = [
+            'step-demographics', 'step-qual-1', 'step-qual-2', 'step-qual-3', 'step-qual-4', 'step-qual-5', 'step-qual-6',
+            'step-phq', 'step-gad', 'step-das', 'step-wem', 'step-booking'
+        ];
+        let currentIndex = 0;
+
+        function updateUIState() {
+            const percentage = Math.round((currentIndex / (sequence.length - 1)) * 100);
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            
+            // i18n support for progress text
+            const progText = document.getElementById('progress-text');
+            progText.innerText = currentLang === 'en' ? `${percentage}% Complete` : `${percentage}% Mukammal`;
+            
+            const btnBack = document.getElementById('btn-back');
+            const btnNext = document.getElementById('btn-next');
+            const navFooter = document.getElementById('nav-footer');
+            const headerBar = document.getElementById('header-bar');
+
+            if(btnBack) btnBack.style.visibility = currentIndex > 0 ? 'visible' : 'hidden';
+            
+            if (currentIndex === sequence.length - 1) { 
+                if(navFooter) navFooter.style.display = 'none';
+                if(headerBar) headerBar.style.display = 'none';
+                submitToDatabase(); 
+            } else {
+                if(navFooter) navFooter.style.display = 'flex';
+                if(headerBar) headerBar.style.display = 'flex';
+                
+                if(btnNext) {
+                    if (currentIndex === sequence.length - 2) {
+                        btnNext.innerText = currentLang === 'en' ? 'Complete Assessment' : 'Mukammal Karein';
+                    } else {
+                        btnNext.innerText = currentLang === 'en' ? 'Continue' : 'Aage Barhein';
+                    }
+                }
+            }
+        }
+
+        function goNext() {
+            if (!validateCurrentStep()) return; 
+            saveDataLocally();
+            if(currentIndex < sequence.length - 1) {
+                document.getElementById(sequence[currentIndex]).classList.remove('active');
+                currentIndex++;
+                document.getElementById(sequence[currentIndex]).classList.add('active');
+                updateUIState();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function goBack() {
+            if(currentIndex > 0) {
+                document.getElementById(sequence[currentIndex]).classList.remove('active');
+                currentIndex--;
+                document.getElementById(sequence[currentIndex]).classList.add('active');
+                updateUIState();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // ==========================================
+        // CLINICIAN DASHBOARD & FETCH LOGIC
+        // ==========================================
+        function promptClinicianAccess() {
+            const pin = prompt("Clinician Access PIN required:");
+            if(pin) fetchPatients(pin);
+        }
+
+        function fetchPatients(pin) {
+            document.getElementById('step-booking').classList.remove('active');
+            document.getElementById('step-admin-list').classList.add('active');
+            window.scrollTo(0,0);
+            const container = document.getElementById('client-list-container');
+            
+            fetch(SCRIPT_URL + "?password=" + encodeURIComponent(pin))
+                .then(res => res.json())
+                .then(data => {
+                    if(data.error) { container.innerHTML = `<p class="text-center text-red-500 font-bold py-8">Unauthorized PIN</p>`; return; }
+                    if(data.length === 0) { container.innerHTML = `<p class="text-center text-slate-400 italic py-8">No records found.</p>`; return; }
+                    
+                    container.innerHTML = '';
+                    data.reverse().forEach(client => {
+                        const dateStr = new Date(client.date).toLocaleDateString();
+                        const card = document.createElement('div');
+                        card.className = "client-card bg-white p-4 rounded-2xl border border-slate-200 cursor-pointer flex justify-between items-center shadow-sm";
+                        card.innerHTML = `
+                            <div><h3 class="font-bold text-slate-800 text-lg">${client.name}</h3><p class="text-sm text-slate-500">Contact: ${client.contact}</p></div>
+                            <div class="text-right"><p class="text-xs font-bold text-[#479375] bg-[#ECFDF5] px-3 py-1 rounded-full">${dateStr}</p></div>
+                        `;
+                        card.onclick = () => generateDashboard(JSON.parse(client.raw));
+                        container.appendChild(card);
+                    });
+                }).catch(err => { container.innerHTML = `<p class="text-center text-red-500 py-8">Connection error.</p>`; });
+        }
+
+        function extractScore(data, prefix, total) {
+            let score = 0;
+            for(let i=0; i<total; i++) {
+                Object.keys(data).forEach(key => { if(key === `${prefix}_${i}`) score += parseInt(data[key]); });
+            }
+            return score;
+        }
+
+        function extractDass(data) {
+            let scores = {1:0, 2:0, 3:0};
+            dass21_qs.forEach((q, i) => { if(data[`das_${i}`]) scores[q.type] += parseInt(data[`das_${i}`]); });
+            return { d: scores[1]*2, a: scores[2]*2, s: scores[3]*2 };
+        }
+
+        function reduceNum(num) {
+            if (num === 0) return 0;
+            if (num === 11 || num === 22 || num === 33) return num; 
+            while (num > 9) {
+                if (num === 11 || num === 22 || num === 33) return num;
+                num = num.toString().split('').reduce((acc, curr) => acc + parseInt(curr), 0);
+            }
+            return num;
+        }
+
+        function letterValue(char) {
+            const code = char.toLowerCase().charCodeAt(0) - 96;
+            return (code > 0 && code <= 26) ? ((code - 1) % 9) + 1 : 0;
+        }
+
+        function generateDashboard(clientData) {
+            document.getElementById('step-admin-list').classList.remove('active');
+            document.getElementById('step-results').classList.add('active');
+            window.scrollTo(0,0);
+
+            const name = clientData['demo-name'] || 'Subject';
+            document.getElementById('patient-summary').innerText = `Data for: ${name}`;
+
+            const phq = extractScore(clientData, 'phq', 9);
+            const gad = extractScore(clientData, 'gad', 7);
+            const dass = extractDass(clientData);
+            const wem = extractScore(clientData, 'wem', 14);
+
+            document.getElementById('res-phq9').innerText = `${phq}/27`;
+            document.getElementById('sev-phq9').innerText = phq < 5 ? "Minimal" : phq < 10 ? "Mild" : phq < 15 ? "Moderate" : phq < 20 ? "Mod. Severe" : "Severe";
+            document.getElementById('res-gad7').innerText = `${gad}/21`;
+            document.getElementById('sev-gad7').innerText = gad < 5 ? "Minimal" : gad < 10 ? "Mild" : gad < 15 ? "Moderate" : "Severe";
+            document.getElementById('res-dass-d').innerText = dass.d;
+            document.getElementById('res-dass-a').innerText = dass.a;
+            document.getElementById('res-dass-s').innerText = dass.s;
+            document.getElementById('res-wemwbs').innerText = `${wem}/70`;
+
+            const dob = clientData['demo-dob'];
+            let month = 0, day = 0, year = 0;
+            if(dob) {
+                const parts = dob.split('-');
+                year = parts[0] ? parts[0].split('').reduce((a,b)=>a+parseInt(b),0) : 0;
+                month = parts[1] ? parts[1].split('').reduce((a,b)=>a+parseInt(b),0) : 0;
+                day = parts[2] ? parts[2].split('').reduce((a,b)=>a+parseInt(b),0) : 0;
+            }
+            const attitude = reduceNum(reduceNum(month) + reduceNum(day));
+            const character = reduceNum(reduceNum(month) + reduceNum(day) + reduceNum(year));
+            const cleanName = name.toLowerCase().replace(/[^a-z]/g, '');
+            const vowels = cleanName.match(/[aeiou]/g) || [];
+            const consonants = cleanName.match(/[^aeiou]/g) || [];
+            
+            document.getElementById('num-destiny').innerText = reduceNum(cleanName.split('').reduce((acc, c) => acc + letterValue(c), 0)) || '?';
+            document.getElementById('num-character').innerText = character || '?';
+            document.getElementById('num-soul').innerText = reduceNum(vowels.reduce((acc, v) => acc + letterValue(v), 0)) || '?';
+            document.getElementById('num-personality').innerText = reduceNum(consonants.reduce((acc, c) => acc + letterValue(c), 0)) || '?';
+            document.getElementById('num-attitude').innerText = attitude || '?';
+            document.getElementById('num-purpose').innerText = reduceNum(parseInt(document.getElementById('num-destiny').innerText) + character) || '?';
+
+            const ctx = document.getElementById('resultsChart').getContext('2d');
+            if(window.resultsChartInstance) window.resultsChartInstance.destroy();
+            Chart.defaults.font.family = "'Nunito', sans-serif";
+            Chart.defaults.color = "#64748B";
+
+            window.resultsChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Depression', 'Anxiety', 'Distress', 'Flourishing'],
+                    datasets: [{
+                        label: 'Clinical Profile',
+                        data: [(phq/27)*100, (gad/21)*100, ((dass.d+dass.a+dass.s)/126)*100, (wem/70)*100],
+                        backgroundColor: 'rgba(71, 147, 117, 0.2)', borderColor: 'rgba(71, 147, 117, 1)', pointBackgroundColor: 'rgba(71, 147, 117, 1)', borderWidth: 2
+                    }]
+                },
+                options: { scales: { r: { angleLines: { color: 'rgba(0, 0, 0, 0.05)' }, grid: { color: 'rgba(0, 0, 0, 0.05)' }, pointLabels: { font: { size: 12, weight: 'bold' }, color: '#475569' }, ticks: { display: false, max: 100, min: 0 } } }, plugins: { legend: { display: false } }, maintainAspectRatio: false }
+            });
+        }
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            buildQualitativeUI();
+            rebuildScales();
+
+            document.querySelectorAll('.auto-resize').forEach(textarea => {
+                textarea.addEventListener('input', function() {
+                    this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px';
+                });
+            });
+
+            const nextBtn = document.getElementById('btn-next');
+            const backBtn = document.getElementById('btn-back');
+            const printBtn = document.getElementById('btn-print');
+            const lockIcon = document.getElementById('clinician-lock');
+            
+            if(nextBtn) nextBtn.addEventListener('click', goNext);
+            if(backBtn) backBtn.addEventListener('click', goBack);
+            if(printBtn) printBtn.addEventListener('click', () => window.print());
+            if(lockIcon) lockIcon.addEventListener('click', promptClinicianAccess);
+
+            loadData();
+            updateUIState();
+        });
+    </script>
+</body>
+</html>
