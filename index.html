@@ -143,7 +143,6 @@
                     <input type="tel" id="demo-contact" class="save-target error-highlight w-full bg-white border border-slate-200 rounded-2xl p-4 text-slate-800 focus:outline-none focus:border-[#479375] transition-all">
                 </div>
                 
-                <!-- Informed Consent Checkbox -->
                 <div class="md:col-span-2 mt-4">
                     <label class="flex items-start gap-4 cursor-pointer p-4 bg-slate-50 border border-slate-200 rounded-2xl hover:bg-slate-100 transition-colors">
                         <input type="checkbox" id="demo-consent" class="save-target mt-1 w-5 h-5 text-[#479375] border-slate-300 rounded focus:ring-[#479375]">
@@ -161,7 +160,7 @@
         <!-- ========================================== -->
         <!-- CLIENT VIEW: BOOKING PAGE -->
         <!-- ========================================== -->
-        <div id="step-booking" class="step-section text-center py-16">
+        <div id="step-booking" class="step-section text-center py-16 relative">
             
             <!-- Hidden Crisis Banner (Triggered by PHQ-9 Q9) -->
             <div id="crisis-banner" class="hidden max-w-2xl mx-auto mb-10 bg-red-50 border border-red-200 rounded-3xl p-6 text-left shadow-sm">
@@ -194,7 +193,8 @@
                 </a>
             </div>
 
-            <div id="clinician-lock" class="fixed bottom-6 right-6 opacity-0 hover:opacity-30 transition-opacity cursor-pointer p-4 bg-transparent">
+            <!-- Fix applied here: Opacity adjusted to 20% by default, making it visible as a faint watermark -->
+            <div id="clinician-lock" class="fixed bottom-6 right-6 opacity-20 hover:opacity-100 transition-opacity cursor-pointer p-3 z-50 rounded-full border border-slate-200 bg-white/50 backdrop-blur-sm">
                 <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
             </div>
         </div>
@@ -505,7 +505,6 @@
                 if(el.tagName === 'OPTION') {
                     el.text = el.getAttribute(`data-${currentLang}`);
                 } else if (el.innerHTML.includes('<svg') || el.innerHTML.includes('<path')) {
-                    // Skip elements with complex inner SVGs like the button
                     const textNode = el.querySelector('span') || el;
                     if(textNode.hasAttribute(`data-${currentLang}`)) {
                         textNode.innerHTML = textNode.getAttribute(`data-${currentLang}`);
@@ -525,8 +524,9 @@
             });
 
             loadData(); 
-            updateUIState(); // Refresh button texts
+            updateUIState();
         }
+
 
         // ==========================================
         // VALIDATION LOGIC
@@ -538,7 +538,6 @@
             let isValid = true;
             let firstInvalid = null;
 
-            // Validate inputs and textareas
             const inputs = currentSection.querySelectorAll('input[type="text"], input[type="date"], input[type="tel"], select, textarea, input[type="checkbox"]');
             inputs.forEach(input => {
                 if (input.classList.contains('save-target')) {
@@ -557,7 +556,6 @@
                 }
             });
 
-            // Validate Radios
             const radios = currentSection.querySelectorAll('input[type="radio"].save-target-radio');
             const radioNames = new Set();
             radios.forEach(r => radioNames.add(r.name));
@@ -573,6 +571,8 @@
                         container.classList.add('border-l-4', 'border-red-400', 'pl-4', '-ml-4');
                         if (!firstInvalid) firstInvalid = container;
                     }
+                } else if(container) {
+                    container.classList.remove('border-l-4', 'border-red-400', 'pl-4', '-ml-4');
                 }
             });
 
@@ -633,14 +633,12 @@
         function submitToDatabase() {
             const data = saveDataLocally();
             
-            // Check Crisis Protocol (PHQ-9 Question 9 is index 8)
             if (data['phq_8'] && parseInt(data['phq_8']) > 0) {
                 document.getElementById('crisis-banner').classList.remove('hidden');
             } else {
                 document.getElementById('crisis-banner').classList.add('hidden');
             }
 
-            // Wipe local storage for privacy on shared devices
             try { localStorage.removeItem('aura_intake_data'); } catch(e) {}
 
             if(!SCRIPT_URL) return;
@@ -650,7 +648,6 @@
             }).catch(error => console.error('Error securely transmitting data.'));
         }
 
-        // Clear error highlighting instantly
         document.addEventListener('change', (e) => { 
             if(e.target.classList.contains('save-target')) {
                 if(e.target.type === 'checkbox') {
