@@ -362,6 +362,17 @@
             </div>
         </div>
 
+        <!-- Navigation Footer -->
+        <div class="no-print mt-12 pt-8 border-t border-slate-100 flex justify-between items-center" id="nav-footer">
+            <button onclick="goBack()" id="btn-back" class="px-6 py-3 text-slate-400 hover:text-slate-700 font-bold transition-colors invisible flex items-center gap-2 i18n-text" data-en="Back" data-ur="Peechay">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
+                Back
+            </button>
+            <button onclick="goNext()" id="btn-next" class="px-8 py-3.5 bg-[#479375] hover:bg-[#38785e] text-white rounded-full font-bold transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 i18n-text" data-en="Continue" data-ur="Aage Barhein">
+                Continue
+            </button>
+        </div>
+
     </div>
 
     <script>
@@ -601,7 +612,6 @@
             return { d: scores[1]*2, a: scores[2]*2, s: scores[3]*2 };
         }
 
-        // Get Clinical Interpretations
         function getPhqInterpretation(score) {
             if (score >= 20) return "Severe depression. High risk. Immediate clinical intervention and possible pharmacological support heavily indicated.";
             if (score >= 15) return "Moderately severe depression. Active treatment with evidence-based psychotherapy (e.g., CBT) and close monitoring indicated.";
@@ -633,7 +643,6 @@
             return "Low mental well-being. Patient is struggling with baseline resilience and connection.";
         }
 
-        // Sally Faubion Numerology Dictionary
         const numerologyMeaning = {
           destiny: {
             description: "This is the most influential number in relation to your personal motivations, what and who you like in your surroundings, and the career(s) you would be most likely to aspire toward.",
@@ -699,9 +708,6 @@
             };
         }
 
-        // ==========================================
-        // RENDER DASHBOARD
-        // ==========================================
         function generateDashboard(clientData) {
             document.getElementById('step-admin-list').classList.remove('active');
             document.getElementById('step-results').classList.add('active');
@@ -710,10 +716,8 @@
             const name = clientData['demo-name'] || 'Subject';
             document.getElementById('patient-summary').innerText = `Data for: ${name}`;
 
-            // Calculate Scores
             const phq = extractScore(clientData, 'phq', 9); const gad = extractScore(clientData, 'gad', 7); const dass = extractDass(clientData); const wem = extractScore(clientData, 'wem', 14);
 
-            // Populate Score Text
             document.getElementById('res-phq9').innerText = `${phq}/27`;
             document.getElementById('sev-phq9').innerText = phq < 5 ? "Minimal" : phq < 10 ? "Mild" : phq < 15 ? "Moderate" : phq < 20 ? "Mod. Severe" : "Severe";
             document.getElementById('interp-phq9').innerText = getPhqInterpretation(phq);
@@ -730,7 +734,6 @@
             document.getElementById('res-wemwbs').innerText = `${wem}/70`;
             document.getElementById('interp-wemwbs').innerText = getWemwbsInterpretation(wem);
 
-            // Populate Numerology
             const dob = clientData['demo-dob'];
             const numbers = calculateSallyFaubionNumerology(name, dob);
             
@@ -740,7 +743,6 @@
                 document.getElementById(`desc-${cat}`).innerText = numbers[cat].text;
             });
 
-            // Radar Chart
             const ctx = document.getElementById('resultsChart').getContext('2d');
             if(window.resultsChartInstance) window.resultsChartInstance.destroy();
             Chart.defaults.font.family = "'Nunito', sans-serif";
@@ -757,8 +759,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             buildQualitativeUI(); rebuildScales();
             document.querySelectorAll('.auto-resize').forEach(t => { t.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px'; }); });
-            document.getElementById('btn-next')?.addEventListener('click', goNext);
-            document.getElementById('btn-back')?.addEventListener('click', goBack);
             document.getElementById('btn-print')?.addEventListener('click', () => window.print());
             document.getElementById('clinician-lock')?.addEventListener('click', promptClinicianAccess);
             loadData(); updateUIState();
