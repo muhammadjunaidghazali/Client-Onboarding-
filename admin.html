@@ -19,6 +19,7 @@
             body { background: white; }
             .no-print { display: none !important; }
             .glass-panel { box-shadow: none; border: none; }
+            .numerology-scroll { max-height: none !important; overflow: visible !important; }
         }
     </style>
 </head>
@@ -30,8 +31,8 @@
         <div class="flex items-center gap-4 mb-10 pb-6 border-b border-slate-100 no-print">
             <img src="Creative Brain and Light Bulb Logo Template - 1.png" alt="Logo" class="h-12 w-auto object-contain">
             <div>
-                <h1 class="text-2xl font-bold tracking-tight text-slate-800">Ghazali Secure Portal</h1>
-                <p class="text-slate-500 text-sm">Clinician Access Only</p>
+                <h1 class="text-2xl font-bold tracking-tight text-slate-800">Ghazali Secure Clinician Portal</h1>
+                <p class="text-slate-500 text-sm">Practitioner Access Only</p>
             </div>
         </div>
 
@@ -49,11 +50,11 @@
         <!-- 2. CLIENT LIST SCREEN -->
         <div id="step-list" class="step-section">
             <div class="flex justify-between items-end mb-6">
-                <h2 class="text-2xl font-bold text-slate-800">Patient Database</h2>
-                <button onclick="location.reload()" class="text-sm font-bold text-[#479375] hover:text-[#38785e]">⟳ Refresh List</button>
+                <h2 class="text-2xl font-bold text-slate-800">Patient Files</h2>
+                <button onclick="authenticate()" class="text-sm font-bold text-[#479375] hover:text-[#38785e]">⟳ Refresh List</button>
             </div>
             <div id="client-list-container" class="space-y-4 max-h-[65vh] overflow-y-auto pr-2 bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                <!-- Data injects here -->
+                <p class="text-center text-slate-400 py-8">Authenticating database...</p>
             </div>
         </div>
 
@@ -65,7 +66,7 @@
                     <p class="text-[#479375] font-bold text-sm" id="patient-date">Assessment Date</p>
                 </div>
                 <div class="flex gap-3 no-print">
-                    <button onclick="showList()" class="px-5 py-2 bg-white border border-slate-200 text-slate-700 rounded-full font-bold text-sm shadow-sm hover:bg-slate-50">&larr; Back to List</button>
+                    <button onclick="switchView('step-list'); window.scrollTo(0,0);" class="px-5 py-2 bg-white border border-slate-200 text-slate-700 rounded-full font-bold text-sm shadow-sm hover:bg-slate-50">&larr; Back to List</button>
                     <button onclick="window.print()" class="px-5 py-2 bg-[#479375] text-white rounded-full font-bold flex items-center gap-2 text-sm shadow-sm hover:bg-[#38785e]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg> Print Report
                     </button>
@@ -74,28 +75,38 @@
 
             <!-- DASHBOARD GRID -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Scales -->
+                <!-- LEFT COLUMN -->
                 <div>
                     <h3 class="text-xs font-bold text-slate-400 mb-4 tracking-widest uppercase">Psychometric Telemetry</h3>
                     <div class="space-y-4">
-                        <div class="bg-white p-5 rounded-2xl border border-slate-100 flex justify-between items-center shadow-sm">
-                            <div><h3 class="text-slate-800 font-bold">PHQ-9 (Depression)</h3><p class="text-sm font-semibold text-slate-500 mt-1" id="sev-phq9"></p></div>
-                            <div class="text-2xl font-bold text-[#479375]" id="res-phq9">0</div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                            <div class="flex justify-between items-center mb-2">
+                                <div><h3 class="text-slate-800 font-bold">PHQ-9 (Depression)</h3><p class="text-sm font-semibold text-slate-500 mt-1" id="sev-phq9"></p></div>
+                                <div class="text-2xl font-bold text-[#479375]" id="res-phq9">0/27</div>
+                            </div>
+                            <p class="text-sm text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 mt-2" id="interp-phq9"></p>
                         </div>
-                        <div class="bg-white p-5 rounded-2xl border border-slate-100 flex justify-between items-center shadow-sm">
-                            <div><h3 class="text-slate-800 font-bold">GAD-7 (Anxiety)</h3><p class="text-sm font-semibold text-slate-500 mt-1" id="sev-gad7"></p></div>
-                            <div class="text-2xl font-bold text-[#479375]" id="res-gad7">0</div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                            <div class="flex justify-between items-center mb-2">
+                                <div><h3 class="text-slate-800 font-bold">GAD-7 (Anxiety)</h3><p class="text-sm font-semibold text-slate-500 mt-1" id="sev-gad7"></p></div>
+                                <div class="text-2xl font-bold text-[#479375]" id="res-gad7">0/21</div>
+                            </div>
+                            <p class="text-sm text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 mt-2" id="interp-gad7"></p>
                         </div>
+
                         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
                             <h3 class="text-slate-800 font-bold mb-3">DASS-21 (Breakdown)</h3>
-                            <div class="grid grid-cols-3 gap-3 text-center">
-                                <div class="bg-slate-50 rounded-xl p-3"><span class="text-[10px] font-bold text-slate-400 block uppercase mb-1">Depression</span><span id="res-dass-d" class="text-xl font-bold text-slate-700">0</span></div>
-                                <div class="bg-slate-50 rounded-xl p-3"><span class="text-[10px] font-bold text-slate-400 block uppercase mb-1">Anxiety</span><span id="res-dass-a" class="text-xl font-bold text-slate-700">0</span></div>
-                                <div class="bg-slate-50 rounded-xl p-3"><span class="text-[10px] font-bold text-slate-400 block uppercase mb-1">Stress</span><span id="res-dass-s" class="text-xl font-bold text-slate-700">0</span></div>
+                            <div class="grid grid-cols-3 gap-3 text-center mb-3">
+                                <div class="bg-slate-50 rounded-xl p-2"><span class="text-[10px] font-bold text-slate-400 block uppercase">Depression</span><span id="res-dass-d" class="text-lg font-bold text-slate-700">0</span></div>
+                                <div class="bg-slate-50 rounded-xl p-2"><span class="text-[10px] font-bold text-slate-400 block uppercase">Anxiety</span><span id="res-dass-a" class="text-lg font-bold text-slate-700">0</span></div>
+                                <div class="bg-slate-50 rounded-xl p-2"><span class="text-[10px] font-bold text-slate-400 block uppercase">Stress</span><span id="res-dass-s" class="text-lg font-bold text-slate-700">0</span></div>
                             </div>
+                            <p class="text-sm text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100" id="interp-dass"></p>
                         </div>
+
                         <div class="bg-white p-5 rounded-2xl border border-slate-100 flex justify-between items-center shadow-sm">
-                            <h3 class="text-slate-800 font-bold">WEMWBS (Flourishing)</h3><div class="text-2xl font-bold text-[#479375]" id="res-wemwbs">0</div>
+                            <h3 class="text-slate-800 font-bold">WEMWBS (Flourishing)</h3><div class="text-2xl font-bold text-[#479375]" id="res-wemwbs">0/70</div>
                         </div>
                     </div>
                     <div class="mt-4 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm h-60 flex justify-center items-center">
@@ -103,34 +114,52 @@
                     </div>
                 </div>
 
-                <!-- Numerology -->
+                <!-- RIGHT COLUMN -->
                 <div>
-                    <h3 class="text-xs font-bold text-slate-400 mb-4 tracking-widest uppercase">Motivational Numerology</h3>
-                    <div class="space-y-4">
-                        <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-100">
+                    <h3 class="text-xs font-bold text-slate-400 mb-4 tracking-widest uppercase">Motivational Numerology (Sally Faubion)</h3>
+                    <div class="space-y-4 numerology-scroll max-h-[850px] overflow-y-auto pr-2">
+                        
+                        <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100">
                             <div class="flex justify-between items-baseline mb-1"><h4 class="text-amber-800 font-bold text-sm">Destiny (Expression)</h4><span class="text-xl text-amber-600 font-bold" id="num-destiny">?</span></div>
-                            <p class="text-xs text-amber-700/80">Most influential number regarding personal motivations, environment, and career.</p>
+                            <p class="text-xs text-amber-700/80 mb-2" id="def-destiny"></p>
+                            <p class="text-xs text-amber-900 font-semibold bg-white/70 p-2.5 rounded-xl border border-amber-100" id="desc-destiny"></p>
                         </div>
-                        <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-100">
+
+                        <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100">
                             <div class="flex justify-between items-baseline mb-1"><h4 class="text-amber-800 font-bold text-sm">Character (Life Path)</h4><span class="text-xl text-amber-600 font-bold" id="num-character">?</span></div>
-                            <p class="text-xs text-amber-700/80">Represents public and social qualities, as well as behavior in personal relations.</p>
+                            <p class="text-xs text-amber-700/80 mb-2" id="def-character"></p>
+                            <p class="text-xs text-amber-900 font-semibold bg-white/70 p-2.5 rounded-xl border border-amber-100" id="desc-character"></p>
                         </div>
-                        <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-100">
+
+                        <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100">
                             <div class="flex justify-between items-baseline mb-1"><h4 class="text-amber-800 font-bold text-sm">Soul Urge (Heart's Desire)</h4><span class="text-xl text-amber-600 font-bold" id="num-soul">?</span></div>
-                            <p class="text-xs text-amber-700/80">Presents a view of the intuitive, soulful self and internal motivations.</p>
+                            <p class="text-xs text-amber-700/80 mb-2" id="def-soul"></p>
+                            <p class="text-xs text-amber-900 font-semibold bg-white/70 p-2.5 rounded-xl border border-amber-100" id="desc-soul"></p>
                         </div>
-                        <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-100">
+
+                        <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100">
+                            <div class="flex justify-between items-baseline mb-1"><h4 class="text-amber-800 font-bold text-sm">Hidden Agenda</h4><span class="text-xl text-amber-600 font-bold" id="num-agenda">?</span></div>
+                            <p class="text-xs text-amber-700/80 mb-2" id="def-agenda"></p>
+                            <p class="text-xs text-amber-900 font-semibold bg-white/70 p-2.5 rounded-xl border border-amber-100" id="desc-agenda"></p>
+                        </div>
+
+                        <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100">
                             <div class="flex justify-between items-baseline mb-1"><h4 class="text-amber-800 font-bold text-sm">Personality</h4><span class="text-xl text-amber-600 font-bold" id="num-personality">?</span></div>
-                            <p class="text-xs text-amber-700/80">Describes the behind-the-scenes or private self.</p>
+                            <p class="text-xs text-amber-700/80 mb-2" id="def-personality"></p>
+                            <p class="text-xs text-amber-900 font-semibold bg-white/70 p-2.5 rounded-xl border border-amber-100" id="desc-personality"></p>
                         </div>
+
                         <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-100 text-center">
-                                <h4 class="text-amber-800 font-bold text-xs mb-1">Attitude</h4><span class="text-2xl text-amber-600 font-bold" id="num-attitude">?</span>
+                            <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100">
+                                <h4 class="text-amber-800 font-bold text-xs mb-1">Attitude</h4><span class="text-xl text-amber-600 font-bold" id="num-attitude">?</span>
+                                <p class="text-[11px] text-amber-900 font-semibold mt-2" id="desc-attitude"></p>
                             </div>
-                            <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-100 text-center">
-                                <h4 class="text-amber-800 font-bold text-xs mb-1">Divine Purpose</h4><span class="text-2xl text-amber-600 font-bold" id="num-purpose">?</span>
+                            <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100">
+                                <h4 class="text-amber-800 font-bold text-xs mb-1">Divine Purpose</h4><span class="text-xl text-amber-600 font-bold" id="num-purpose">?</span>
+                                <p class="text-[11px] text-amber-900 font-semibold mt-2" id="desc-purpose"></p>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -139,10 +168,8 @@
     </div>
 
     <script>
-        // PASTE YOUR SCRIPT URL HERE
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxwvJxARJBdTSXyNYy9YSJPYoC9jl-FWFDJWD7YzNfFcpqDmgqVqJfvdw-bMx3fkiAU/exec';
 
-        // Allows hitting "Enter" to submit PIN
         document.getElementById("admin-pin").addEventListener("keypress", function(event) {
             if (event.key === "Enter") authenticate();
         });
@@ -173,7 +200,7 @@
                 })
                 .catch(e => {
                     btn.innerText = 'Access Records';
-                    err.innerText = "Network Error. Check SCRIPT_URL.";
+                    err.innerText = "Network Error.";
                     err.style.opacity = '1';
                 });
         }
@@ -181,7 +208,7 @@
         function populateList(data) {
             const container = document.getElementById('client-list-container');
             if(data.length === 0) {
-                container.innerHTML = `<p class="text-center text-slate-400 py-8 font-bold">No clinical data found in database.</p>`;
+                container.innerHTML = `<p class="text-center text-slate-400 py-8 font-bold">No clinical data found.</p>`;
                 return;
             }
             
@@ -189,7 +216,7 @@
             data.reverse().forEach(client => {
                 const dateStr = new Date(client.date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
                 const card = document.createElement('div');
-                card.className = "client-card bg-white p-5 rounded-2xl border border-slate-200 cursor-pointer flex justify-between items-center shadow-sm";
+                card.className = "client-card bg-white p-4 rounded-2xl border border-slate-200 cursor-pointer flex justify-between items-center shadow-sm";
                 card.innerHTML = `
                     <div><h3 class="font-bold text-slate-800 text-lg">${client.name}</h3><p class="text-sm text-slate-500">Contact: ${client.contact}</p></div>
                     <div class="text-right"><p class="text-xs font-bold text-[#479375] bg-[#ECFDF5] px-3 py-1.5 rounded-full">${dateStr}</p></div>
@@ -199,59 +226,118 @@
             });
         }
 
-        function showList() { switchView('step-list'); window.scrollTo(0,0); }
+        // Clinical Explanations & Numerology Dictionaries
+        function getPhqInterpretation(score) {
+            if (score >= 20) return "Severe depression. High risk. Immediate clinical intervention and possible pharmacological support heavily indicated.";
+            if (score >= 15) return "Moderately severe depression. Active treatment with evidence-based psychotherapy (e.g., CBT) and close monitoring indicated.";
+            if (score >= 10) return "Moderate depression. Psychotherapy indicated. Consider watchful waiting if symptoms are recent.";
+            if (score >= 5) return "Mild depression. Watchful waiting and psychological education recommended.";
+            return "Minimal or no depression. Standard wellness maintenance applies.";
+        }
 
-        // --- Math Helpers ---
-        const dass21_map = {0:3, 1:2, 2:1, 3:2, 4:1, 5:3, 6:2, 7:3, 8:2, 9:1, 10:3, 11:3, 12:1, 13:3, 14:2, 15:1, 16:1, 17:3, 18:2, 19:2, 20:1};
-        
-        function getSum(data, prefix, total) {
-            let s=0; for(let i=0; i<total; i++) s+= parseInt(data[`${prefix}_${i}`] || 0); return s;
+        function getGadInterpretation(score) {
+            if (score >= 15) return "Severe anxiety. Indicates high likelihood of generalized anxiety, panic, or social anxiety disorder. Full diagnostic workup recommended.";
+            if (score >= 10) return "Moderate anxiety. Further clinical evaluation is recommended to assess impact on daily functioning.";
+            if (score >= 5) return "Mild anxiety. Monitor symptoms and consider preventative coping strategies.";
+            return "Minimal anxiety. Standard wellness maintenance applies.";
         }
-        function reduceNum(n) {
-            if(n===0)return 0; if(n===11||n===22||n===33)return n;
-            while(n>9){if(n===11||n===22||n===33)return n; n=n.toString().split('').reduce((a,c)=>a+parseInt(c),0);} return n;
+
+        function getDassSeverity(score, type) {
+            if (type === 'd') {
+                if(score >= 28) return "Extremely Severe"; if(score >= 21) return "Severe"; if(score >= 14) return "Moderate"; if(score >= 10) return "Mild"; return "Normal";
+            } else if (type === 'a') {
+                if(score >= 20) return "Extremely Severe"; if(score >= 15) return "Severe"; if(score >= 10) return "Moderate"; if(score >= 8) return "Mild"; return "Normal";
+            } else if (type === 's') {
+                if(score >= 34) return "Extremely Severe"; if(score >= 26) return "Severe"; if(score >= 19) return "Moderate"; if(score >= 15) return "Mild"; return "Normal";
+            }
         }
-        function lVal(c) { let d=c.toLowerCase().charCodeAt(0)-96; return (d>0&&d<=26)?((d-1)%9)+1:0; }
+
+        function getWemwbsInterpretation(score) {
+            if (score >= 60) return "High mental well-being. Patient is highly resilient and flourishing.";
+            if (score >= 43) return "Average mental well-being. Patient has a stable psychological baseline.";
+            return "Low mental well-being. Patient is struggling with baseline resilience and connection.";
+        }
+
+        const numerologyMeaning = {
+          destiny: { description: "Influential number for personal motivations and career aspirations.", 1: "Path of the risk-taker, entrepreneur, and independent trail-blazer.", 2: "Path of the homemaker, team player, caretaker, and collector.", 3: 'Path of the adventurous, creative, "Peter Pan" or disciplined scientific mind.', 4: "Path of the hard-working, dedicated employee/entrepreneur and loyal friend.", 5: "Path of the energized freedom fighter, promoter, and stylish world traveler.", 6: "Path of the good citizen, patient teacher, champion of fairness and justice.", 7: "Path of the scholar, perfectionist, genius, and keeper of secrets.", 8: "Path of the matriarch/patriarch, judge, producer/director, and orchestrator.", 9: 'Path of the aristocratic "old soul" and universal humanitarian.', 11: "Path of the intuitive advisor/counselor, peace-maker, and enlightened public figure.", 22: "Path of the enlightened, prudent, organized, and inspiring visionary." },
+          personality: { description: "Describes the behind-the-scenes or private self.", 1: "Dynamic, strong-willed, and a natural leader with single-minded focus.", 2: "Peacemaker, nurturing, caring, and an indispensable friend or boss.", 3: "Awesomely creative, imaginative, entertaining, and a superlative host.", 4: "Dedicated, detail-oriented, tireless worker whose word is gold.", 5: "Intelligent, enthusiastic, and genial nature that inspires others.", 6: "Responsible, people-oriented, and a lover of beauty, nature, and home.", 7: "Analytical, research-oriented, with a vast quest for knowledge.", 8: "Ambitious, organized, quality operator, born to lead with a penchant for justice.", 9: "Multi-talented, creative, competent, in true character when serving others." },
+          attitude: { description: "How you react to circumstances, most powerful in youth.", 1: "Strong will and independent nature. Prefers making own choices.", 2: "Sweet, gentle, kind, and caring. Loves to nurture and be nurtured.", 3: "Naturally entertaining, adventuresome, and captivating once comfortable.", 4: "Sensitive, stubborn temperament, but dutiful with praise.", 5: "Energy abounding! Needs constant mental/physical stimulation.", 6: "Responsible, conscientious, considerate, and kind to all things of nature.", 7: "Brilliant mind needing alone time to indulge quest for knowledge.", 8: "Exemplary in all things, originating from a need to feel in control.", 9: "Adult-like sensibility at an early age. Fuelled by praise and encouragement." },
+          character: { description: "Primary public and social qualities.", 1: "Original, innovative mind with steadfast focus on goals.", 2: "Diplomacy, good-naturedness, and ambassador-like persona.", 3: "Optimistic, enthusiastic, and creative abilities to entertain/inspire.", 4: "Conscientious, organized, systematic, and reliable worker/leader.", 5: "Charming, articulate, flexible, and style-conscious trendsetter.", 6: "Born humanitarian, community-oriented parent/teacher/leader.", 7: "Philosophically avant-garde, knowledge-seeking genius.", 8: "Commanding, exemplary teacher/judge/director persona.", 9: "Aristocratic, socially pleasing humanitarian focusing on selfless service." },
+          soul: { description: "View of your intuitive, soulful self.", 1: "Urge to be innovative, creative, and lead masses to higher consciousness.", 2: "Urge to effect peace, harmony, and finesse in nurturing others.", 3: "Urge to bring joy, enthusiasm, passion, and arouse imagination.", 4: "Urge to deliver honesty, dependability, practicality, and determination.", 5: "Urge to use abounding energy and progressive mental attributes.", 6: "Urge to be responsible, conscientious, caring, and kind.", 7: "Urge to use analytical nature to discover something meaningful.", 8: "Urge to bring quality, consistency, and inspiration to others.", 9: "Urge to use aristocratic and humane qualities to set an example." },
+          agenda: { description: "Innate (hidden) desires.", 1: "Innate desire to be independent, lead, and innovate.", 2: "Desire to live life in peace and harmony.", 3: "Desire to be creative, entertaining, and bring joy.", 4: "Logic, organization, and perseverance to manifest peace of mind.", 5: "Desire for freedom, travel, and living unrestrained.", 6: "Strong humanitarian focus helping and caring for earth and humans.", 7: "Thirst for knowledge in sciences, philosophies, and arts.", 8: "Desire for power, acclaim, and amassing wealth.", 9: "Desire to attain finest things or live a wholly humanitarian life." },
+          purpose: { description: "Farewell-performance vibration in latter years.", 1: "Legacy of something pioneered—a concept, product, or foundation.", 2: "Bring peace, comfort, and harmony to fellow humans.", 3: "Use creative/imaginative talents to produce art, books, or ideas.", 4: "Build a stable foundation that helps people with a humanitarian focus.", 5: "Effect progressive changes making life better for future generations.", 6: "Teach, instigate humanitarian causes, and care for home/family.", 7: "Impart gathered scientific, artistic, or philosophical knowledge.", 8: "Lead, direct, and help the less fortunate through philanthropy.", 9: "Universal humanitarian working for the betterment of mankind." }
+        };
+
+        const letter2number = { A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, G: 7, H: 8, I: 9, J: 1, K: 2, L: 3, M: 4, N: 5, O: 6, P: 7, Q: 8, R: 9, S: 1, T: 2, U: 3, V: 4, W: 5, X: 6, Y: 7, Z: 8 };
+        const letterCV = { A: 0, B: 1, C: 1, D: 1, E: 0, F: 1, G: 1, H: 1, I: 0, J: 1, K: 1, L: 1, M: 1, N: 1, O: 0, P: 1, Q: 1, R: 1, S: 1, T: 1, U: 0, V: 1, W: 1, X: 1, Y: 0, Z: 1 };
+        const reduceNumber = (n) => { if(n===0) return 0; if(n==11||n==22||n==33) return n; n=""+n; while(n.length>1 && n!="11" && n!="22" && n!="33") n=""+n.split("").reduce((a,d)=>a+Number(d),0); return n; };
+
+        function calculateSallyFaubionNumerology(name, dobString) {
+            let m="", d="", y="";
+            if (dobString) { const p = dobString.split('-'); y = p[0]; m = p[1]; d = p[2]; }
+            const destiny = reduceNumber(m + d + y); const personality = d ? parseInt(d, 10).toString() : "0"; const attitude = reduceNumber(m + d);
+            let uName = (name || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z]/g, "");
+            let numAll = [], numV = [], numC = []; let prevCat = null;
+            
+            for (let i = 0; i < uName.length; i++) {
+                let L = uName[i], num = letter2number[L] || 0, cv = letterCV[L];
+                numAll.push(num);
+                const addV = () => { numV.push(num); prevCat = 0; }; const addC = () => { numC.push(num); prevCat = 1; };
+                if (cv === 1) addC(); else if (cv === 0) { if (L === "Y") { if (prevCat === 1) addV(); else if (i < uName.length - 1 && letterCV[uName[i + 1]] === 1) addV(); else addC(); } else addV(); }
+            }
+            
+            const character = reduceNumber("" + numAll.reduce((a, b) => a + b, 0));
+            const soul = reduceNumber("" + numV.reduce((a, b) => a + b, 0));
+            const agenda = reduceNumber("" + numC.reduce((a, b) => a + b, 0));
+            const purpose = reduceNumber("" + (Number(destiny) + Number(character)));
+            
+            return {
+                destiny: { num: destiny, text: numerologyMeaning.destiny[destiny] || "Insight profile pending." },
+                character: { num: character, text: numerologyMeaning.character[character] || "Insight profile pending." },
+                soul: { num: soul, text: numerologyMeaning.soul[soul] || "Insight profile pending." },
+                agenda: { num: agenda, text: numerologyMeaning.agenda[agenda] || "Insight profile pending." },
+                personality: { num: personality, text: numerologyMeaning.personality[personality] || "Insight profile pending." },
+                attitude: { num: attitude, text: numerologyMeaning.attitude[attitude] || "Insight profile pending." },
+                purpose: { num: purpose, text: numerologyMeaning.purpose[purpose] || "Insight profile pending." }
+            };
+        }
 
         function renderDashboard(name, dateStr, raw) {
-            switchView('step-dashboard');
-            window.scrollTo(0,0);
-
+            switchView('step-dashboard'); window.scrollTo(0,0);
             document.getElementById('patient-summary').innerText = name;
             document.getElementById('patient-date').innerText = "Assessed: " + dateStr;
 
-            // Scoring
             const phq = getSum(raw, 'phq', 9); const gad = getSum(raw, 'gad', 7); const wem = getSum(raw, 'wem', 14);
             let dass = {d:0, a:0, s:0};
             for(let i=0; i<21; i++) {
-                let v = parseInt(raw[`das_${i}`]||0); if(dass21_map[i]===1) dass.d+=v; else if(dass21_map[i]===2) dass.a+=v; else if(dass21_map[i]===3) dass.s+=v;
+                let v = parseInt(raw[`das_${i}`]||0);
+                if(dass21_map[i]===1) dass.d+=v; else if(dass21_map[i]===2) dass.a+=v; else if(dass21_map[i]===3) dass.s+=v;
             }
             dass.d*=2; dass.a*=2; dass.s*=2;
 
             document.getElementById('res-phq9').innerText = `${phq}/27`;
             document.getElementById('sev-phq9').innerText = phq < 5 ? "Minimal" : phq < 10 ? "Mild" : phq < 15 ? "Moderate" : phq < 20 ? "Mod. Severe" : "Severe";
+            document.getElementById('interp-phq9').innerText = getPhqInterpretation(phq);
+
             document.getElementById('res-gad7').innerText = `${gad}/21`;
             document.getElementById('sev-gad7').innerText = gad < 5 ? "Minimal" : gad < 10 ? "Mild" : gad < 15 ? "Moderate" : "Severe";
+            document.getElementById('interp-gad7').innerText = getGadInterpretation(gad);
+
             document.getElementById('res-dass-d').innerText = dass.d; document.getElementById('res-dass-a').innerText = dass.a; document.getElementById('res-dass-s').innerText = dass.s;
+            document.getElementById('interp-dass').innerText = `Breakdown indicates ${getDassSeverity(dass.d, 'd').toLowerCase()} depression, ${getDassSeverity(dass.a, 'a').toLowerCase()} anxiety, and ${getDassSeverity(dass.s, 's').toLowerCase()} stress baseline.`;
+
             document.getElementById('res-wemwbs').innerText = `${wem}/70`;
+            document.getElementById('interp-wemwbs').innerText = getWemwbsInterpretation(wem);
 
-            // Numerology
             const dob = raw['demo-dob'] || '';
-            let m=0, d=0, y=0;
-            if(dob) { const p=dob.split('-'); y=p[0]?p[0].split('').reduce((a,b)=>a+parseInt(b),0):0; m=p[1]?p[1].split('').reduce((a,b)=>a+parseInt(b),0):0; d=p[2]?p[2].split('').reduce((a,b)=>a+parseInt(b),0):0; }
-            const att = reduceNum(reduceNum(m)+reduceNum(d)); const char = reduceNum(reduceNum(m)+reduceNum(d)+reduceNum(y));
-            const cn = name.toLowerCase().replace(/[^a-z]/g, '');
-            const vow = cn.match(/[aeiou]/g)||[]; const con = cn.match(/[^aeiou]/g)||[];
-            const dest = reduceNum(cn.split('').reduce((a,c)=>a+lVal(c),0));
+            const numbers = calculateSallyFaubionNumerology(name, dob);
             
-            document.getElementById('num-destiny').innerText = dest || '?';
-            document.getElementById('num-character').innerText = char || '?';
-            document.getElementById('num-soul').innerText = reduceNum(vow.reduce((a,v)=>a+lVal(v),0)) || '?';
-            document.getElementById('num-personality').innerText = reduceNum(con.reduce((a,c)=>a+lVal(c),0)) || '?';
-            document.getElementById('num-attitude').innerText = att || '?';
-            document.getElementById('num-purpose').innerText = reduceNum(dest+char) || '?';
+            ['destiny', 'character', 'soul', 'agenda', 'personality', 'attitude', 'purpose'].forEach(cat => {
+                document.getElementById(`num-${cat}`).innerText = numbers[cat].num || '?';
+                document.getElementById(`def-${cat}`).innerText = numerologyMeaning[cat].description;
+                document.getElementById(`desc-${cat}`).innerText = numbers[cat].text;
+            });
 
-            // Chart
             const ctx = document.getElementById('resultsChart').getContext('2d');
             if(window.resChart) window.resChart.destroy();
             Chart.defaults.font.family = "'Nunito', sans-serif";
@@ -264,6 +350,9 @@
                 options: { scales: { r: { angleLines: { color: 'rgba(0,0,0,0.05)' }, grid: { color: 'rgba(0,0,0,0.05)' }, pointLabels: { font: { size: 11, weight: 'bold' }, color: '#475569' }, ticks: { display: false, max: 100, min: 0 } } }, plugins: { legend: { display: false } }, maintainAspectRatio: false }
             });
         }
+
+        const dass21_map = {0:3, 1:2, 2:1, 3:2, 4:1, 5:3, 6:2, 7:3, 8:2, 9:1, 10:3, 11:3, 12:1, 13:3, 14:2, 15:1, 16:1, 17:3, 18:2, 19:2, 20:1};
+        function getSum(data, prefix, total) { let s=0; for(let i=0; i<total; i++) s+= parseInt(data[`${prefix}_${i}`]||0); return s; }
     </script>
 </body>
 </html>
