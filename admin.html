@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghazali Secure Clinician Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #F7F5F2; color: #334155; font-family: 'Nunito', sans-serif; min-height: 100vh; }
+        .glass-panel { background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(0, 0, 0, 0.05); box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08); }
+        .step-section { display: none; opacity: 0; transition: all 0.4s ease; transform: translateY(10px); }
+        .step-section.active { display: block; opacity: 1; transform: translateY(0); }
+        .client-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        @media print {
+            body { background: white; }
+            .no-print { display: none !important; }
+            .glass-panel { box-shadow: none; border: none; }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex justify-center items-start">
+
+    <div class="glass-panel w-full max-w-5xl rounded-[2rem] p-6 md:p-10 mt-4 mb-12">
+        
+        <!-- Header -->
+        <div class="flex items-center gap-4 mb-10 pb-6 border-b border-slate-100 no-print">
+            <img src="Creative Brain and Light Bulb Logo Template - 1.png" alt="Logo" class="h-12 w-auto object-contain">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight text-slate-800">Ghazali Secure Portal</h1>
+                <p class="text-slate-500 text-sm">Clinician Access Only</p>
+            </div>
+        </div>
+
+        <!-- 1. LOGIN SCREEN -->
+        <div id="step-login" class="step-section active text-center py-12">
+            <svg class="w-16 h-16 mx-auto text-slate-300 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            <h2 class="text-2xl font-bold text-slate-800 mb-2">Authentication Required</h2>
+            <p class="text-slate-500 mb-8">Please enter your clinician PIN to access patient records.</p>
+            <input type="password" id="admin-pin" placeholder="Enter PIN" class="text-center w-full max-w-xs bg-slate-50 border border-slate-200 rounded-full p-4 text-slate-800 focus:outline-none focus:border-[#479375] transition-all mb-4 tracking-widest text-lg">
+            <br>
+            <button onclick="authenticate()" class="px-8 py-3 bg-[#479375] hover:bg-[#38785e] text-white rounded-full font-bold transition-all shadow-md">Access Records</button>
+            <p id="login-error" class="text-red-500 font-bold mt-4 opacity-0 transition-opacity">Invalid PIN. Please try again.</p>
+        </div>
+
+        <!-- 2. CLIENT LIST SCREEN -->
+        <div id="step-list" class="step-section">
+            <div class="flex justify-between items-end mb-6">
+                <h2 class="text-2xl font-bold text-slate-800">Patient Database</h2>
+                <button onclick="location.reload()" class="text-sm font-bold text-[#479375] hover:text-[#38785e]">⟳ Refresh List</button>
+            </div>
+            <div id="client-list-container" class="space-y-4 max-h-[65vh] overflow-y-auto pr-2 bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                <!-- Data injects here -->
+            </div>
+        </div>
+
+        <!-- 3. DETAILED DASHBOARD SCREEN -->
+        <div id="step-dashboard" class="step-section">
+            <div class="flex justify-between items-center mb-8 pb-6 border-b border-slate-100">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800" id="patient-summary">Patient Name</h2>
+                    <p class="text-[#479375] font-bold text-sm" id="patient-date">Assessment Date</p>
+                </div>
+                <div class="flex gap-3 no-print">
+                    <button onclick="showList()" class="px-5 py-2 bg-white border border-slate-200 text-slate-700 rounded-full font-bold text-sm shadow-sm hover:bg-slate-50">&larr; Back to List</button>
+                    <button onclick="window.print()" class="px-5 py-2 bg-[#479375] text-white rounded-full font-bold flex items-center gap-2 text-sm shadow-sm hover:bg-[#38785e]">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg> Print Report
+                    </button>
+                </div>
+            </div>
+
+            <!-- DASHBOARD GRID -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Scales -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-400 mb-4 tracking-widest uppercase">Psychometric Telemetry</h3>
+                    <div class="space-y-4">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 flex justify-between items-center shadow-sm">
+                            <div><h3 class="text-slate-800 font-bold">PHQ-9 (Depression)</h3><p class="text-sm font-semibold text-slate-500 mt-1" id="sev-phq9"></p></div>
+                            <div class="text-2xl font-bold text-[#479375]" id="res-phq9">0</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 flex justify-between items-center shadow-sm">
+                            <div><h3 class="text-slate-800 font-bold">GAD-7 (Anxiety)</h3><p class="text-sm font-semibold text-slate-500 mt-1" id="sev-gad7"></p></div>
+                            <div class="text-2xl font-bold text-[#479375]" id="res-gad7">0</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                            <h3 class="text-slate-800 font-bold mb-3">DASS-21 (Breakdown)</h3>
+                            <div class="grid grid-cols-3 gap-3 text-center">
+                                <div class="bg-slate-50 rounded-xl p-3"><span class="text-[10px] font-bold text-slate-400 block uppercase mb-1">Depression</span><span id="res-dass-d" class="text-xl font-bold text-slate-700">0</span></div>
+                                <div class="bg-slate-50 rounded-xl p-3"><span class="text-[10px] font-bold text-slate-400 block uppercase mb-1">Anxiety</span><span id="res-dass-a" class="text-xl font-bold text-slate-700">0</span></div>
+                                <div class="bg-slate-50 rounded-xl p-3"><span class="text-[10px] font-bold text-slate-400 block uppercase mb-1">Stress</span><span id="res-dass-s" class="text-xl font-bold text-slate-700">0</span></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 flex justify-between items-center shadow-sm">
+                            <h3 class="text-slate-800 font-bold">WEMWBS (Flourishing)</h3><div class="text-2xl font-bold text-[#479375]" id="res-wemwbs">0</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm h-60 flex justify-center items-center">
+                        <canvas id="resultsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Numerology -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-400 mb-4 tracking-widest uppercase">Motivational Numerology</h3>
+                    <div class="space-y-4">
+                        <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-100">
+                            <div class="flex justify-between items-baseline mb-1"><h4 class="text-amber-800 font-bold text-sm">Destiny (Expression)</h4><span class="text-xl text-amber-600 font-bold" id="num-destiny">?</span></div>
+                            <p class="text-xs text-amber-700/80">Most influential number regarding personal motivations, environment, and career.</p>
+                        </div>
+                        <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-100">
+                            <div class="flex justify-between items-baseline mb-1"><h4 class="text-amber-800 font-bold text-sm">Character (Life Path)</h4><span class="text-xl text-amber-600 font-bold" id="num-character">?</span></div>
+                            <p class="text-xs text-amber-700/80">Represents public and social qualities, as well as behavior in personal relations.</p>
+                        </div>
+                        <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-100">
+                            <div class="flex justify-between items-baseline mb-1"><h4 class="text-amber-800 font-bold text-sm">Soul Urge (Heart's Desire)</h4><span class="text-xl text-amber-600 font-bold" id="num-soul">?</span></div>
+                            <p class="text-xs text-amber-700/80">Presents a view of the intuitive, soulful self and internal motivations.</p>
+                        </div>
+                        <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-100">
+                            <div class="flex justify-between items-baseline mb-1"><h4 class="text-amber-800 font-bold text-sm">Personality</h4><span class="text-xl text-amber-600 font-bold" id="num-personality">?</span></div>
+                            <p class="text-xs text-amber-700/80">Describes the behind-the-scenes or private self.</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-100 text-center">
+                                <h4 class="text-amber-800 font-bold text-xs mb-1">Attitude</h4><span class="text-2xl text-amber-600 font-bold" id="num-attitude">?</span>
+                            </div>
+                            <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-100 text-center">
+                                <h4 class="text-amber-800 font-bold text-xs mb-1">Divine Purpose</h4><span class="text-2xl text-amber-600 font-bold" id="num-purpose">?</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // PASTE YOUR SCRIPT URL HERE
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxwvJxARJBdTSXyNYy9YSJPYoC9jl-FWFDJWD7YzNfFcpqDmgqVqJfvdw-bMx3fkiAU/exec';
+
+        // Allows hitting "Enter" to submit PIN
+        document.getElementById("admin-pin").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") authenticate();
+        });
+
+        function switchView(viewId) {
+            document.querySelectorAll('.step-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        function authenticate() {
+            const pin = document.getElementById('admin-pin').value;
+            const btn = document.querySelector('button');
+            const err = document.getElementById('login-error');
+            
+            err.style.opacity = '0';
+            btn.innerText = 'Authenticating...';
+
+            fetch(SCRIPT_URL + "?password=" + encodeURIComponent(pin))
+                .then(res => res.json())
+                .then(data => {
+                    btn.innerText = 'Access Records';
+                    if(data.error) {
+                        err.style.opacity = '1';
+                        return;
+                    }
+                    populateList(data);
+                    switchView('step-list');
+                })
+                .catch(e => {
+                    btn.innerText = 'Access Records';
+                    err.innerText = "Network Error. Check SCRIPT_URL.";
+                    err.style.opacity = '1';
+                });
+        }
+
+        function populateList(data) {
+            const container = document.getElementById('client-list-container');
+            if(data.length === 0) {
+                container.innerHTML = `<p class="text-center text-slate-400 py-8 font-bold">No clinical data found in database.</p>`;
+                return;
+            }
+            
+            container.innerHTML = '';
+            data.reverse().forEach(client => {
+                const dateStr = new Date(client.date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+                const card = document.createElement('div');
+                card.className = "client-card bg-white p-5 rounded-2xl border border-slate-200 cursor-pointer flex justify-between items-center shadow-sm";
+                card.innerHTML = `
+                    <div><h3 class="font-bold text-slate-800 text-lg">${client.name}</h3><p class="text-sm text-slate-500">Contact: ${client.contact}</p></div>
+                    <div class="text-right"><p class="text-xs font-bold text-[#479375] bg-[#ECFDF5] px-3 py-1.5 rounded-full">${dateStr}</p></div>
+                `;
+                card.onclick = () => renderDashboard(client.name, dateStr, JSON.parse(client.raw));
+                container.appendChild(card);
+            });
+        }
+
+        function showList() { switchView('step-list'); window.scrollTo(0,0); }
+
+        // --- Math Helpers ---
+        const dass21_map = {0:3, 1:2, 2:1, 3:2, 4:1, 5:3, 6:2, 7:3, 8:2, 9:1, 10:3, 11:3, 12:1, 13:3, 14:2, 15:1, 16:1, 17:3, 18:2, 19:2, 20:1};
+        
+        function getSum(data, prefix, total) {
+            let s=0; for(let i=0; i<total; i++) s+= parseInt(data[`${prefix}_${i}`] || 0); return s;
+        }
+        function reduceNum(n) {
+            if(n===0)return 0; if(n===11||n===22||n===33)return n;
+            while(n>9){if(n===11||n===22||n===33)return n; n=n.toString().split('').reduce((a,c)=>a+parseInt(c),0);} return n;
+        }
+        function lVal(c) { let d=c.toLowerCase().charCodeAt(0)-96; return (d>0&&d<=26)?((d-1)%9)+1:0; }
+
+        function renderDashboard(name, dateStr, raw) {
+            switchView('step-dashboard');
+            window.scrollTo(0,0);
+
+            document.getElementById('patient-summary').innerText = name;
+            document.getElementById('patient-date').innerText = "Assessed: " + dateStr;
+
+            // Scoring
+            const phq = getSum(raw, 'phq', 9); const gad = getSum(raw, 'gad', 7); const wem = getSum(raw, 'wem', 14);
+            let dass = {d:0, a:0, s:0};
+            for(let i=0; i<21; i++) {
+                let v = parseInt(raw[`das_${i}`]||0); if(dass21_map[i]===1) dass.d+=v; else if(dass21_map[i]===2) dass.a+=v; else if(dass21_map[i]===3) dass.s+=v;
+            }
+            dass.d*=2; dass.a*=2; dass.s*=2;
+
+            document.getElementById('res-phq9').innerText = `${phq}/27`;
+            document.getElementById('sev-phq9').innerText = phq < 5 ? "Minimal" : phq < 10 ? "Mild" : phq < 15 ? "Moderate" : phq < 20 ? "Mod. Severe" : "Severe";
+            document.getElementById('res-gad7').innerText = `${gad}/21`;
+            document.getElementById('sev-gad7').innerText = gad < 5 ? "Minimal" : gad < 10 ? "Mild" : gad < 15 ? "Moderate" : "Severe";
+            document.getElementById('res-dass-d').innerText = dass.d; document.getElementById('res-dass-a').innerText = dass.a; document.getElementById('res-dass-s').innerText = dass.s;
+            document.getElementById('res-wemwbs').innerText = `${wem}/70`;
+
+            // Numerology
+            const dob = raw['demo-dob'] || '';
+            let m=0, d=0, y=0;
+            if(dob) { const p=dob.split('-'); y=p[0]?p[0].split('').reduce((a,b)=>a+parseInt(b),0):0; m=p[1]?p[1].split('').reduce((a,b)=>a+parseInt(b),0):0; d=p[2]?p[2].split('').reduce((a,b)=>a+parseInt(b),0):0; }
+            const att = reduceNum(reduceNum(m)+reduceNum(d)); const char = reduceNum(reduceNum(m)+reduceNum(d)+reduceNum(y));
+            const cn = name.toLowerCase().replace(/[^a-z]/g, '');
+            const vow = cn.match(/[aeiou]/g)||[]; const con = cn.match(/[^aeiou]/g)||[];
+            const dest = reduceNum(cn.split('').reduce((a,c)=>a+lVal(c),0));
+            
+            document.getElementById('num-destiny').innerText = dest || '?';
+            document.getElementById('num-character').innerText = char || '?';
+            document.getElementById('num-soul').innerText = reduceNum(vow.reduce((a,v)=>a+lVal(v),0)) || '?';
+            document.getElementById('num-personality').innerText = reduceNum(con.reduce((a,c)=>a+lVal(c),0)) || '?';
+            document.getElementById('num-attitude').innerText = att || '?';
+            document.getElementById('num-purpose').innerText = reduceNum(dest+char) || '?';
+
+            // Chart
+            const ctx = document.getElementById('resultsChart').getContext('2d');
+            if(window.resChart) window.resChart.destroy();
+            Chart.defaults.font.family = "'Nunito', sans-serif";
+            window.resChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Depression', 'Anxiety', 'Distress', 'Flourishing'],
+                    datasets: [{ label: 'Profile', data: [(phq/27)*100, (gad/21)*100, ((dass.d+dass.a+dass.s)/126)*100, (wem/70)*100], backgroundColor: 'rgba(71, 147, 117, 0.2)', borderColor: '#479375', pointBackgroundColor: '#479375', borderWidth: 2 }]
+                },
+                options: { scales: { r: { angleLines: { color: 'rgba(0,0,0,0.05)' }, grid: { color: 'rgba(0,0,0,0.05)' }, pointLabels: { font: { size: 11, weight: 'bold' }, color: '#475569' }, ticks: { display: false, max: 100, min: 0 } } }, plugins: { legend: { display: false } }, maintainAspectRatio: false }
+            });
+        }
+    </script>
+</body>
+</html>
