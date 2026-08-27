@@ -735,7 +735,7 @@
             document.getElementById('interp-wemwbs').innerText = getWemwbsInterpretation(wem);
 
             const dob = clientData['demo-dob'];
-            const numbers = calculateSallyFaubionNumerology(name, dob);
+            const numbers = calculateNumerology(name, dob);
             
             ['destiny', 'character', 'soul', 'agenda', 'personality', 'attitude', 'purpose'].forEach(cat => {
                 document.getElementById(`num-${cat}`).innerText = numbers[cat].num || '?';
