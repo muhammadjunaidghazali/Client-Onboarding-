@@ -149,15 +149,16 @@
                             <p class="text-xs text-amber-900 font-semibold bg-white/70 p-2.5 rounded-xl border border-amber-100" id="desc-personality"></p>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100">
-                                <h4 class="text-amber-800 font-bold text-xs mb-1">Attitude</h4><span class="text-xl text-amber-600 font-bold" id="num-attitude">?</span>
-                                <p class="text-[11px] text-amber-900 font-semibold mt-2" id="desc-attitude"></p>
-                            </div>
-                            <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100">
-                                <h4 class="text-amber-800 font-bold text-xs mb-1">Divine Purpose</h4><span class="text-xl text-amber-600 font-bold" id="num-purpose">?</span>
-                                <p class="text-[11px] text-amber-900 font-semibold mt-2" id="desc-purpose"></p>
-                            </div>
+                        <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100">
+                            <div class="flex justify-between items-baseline mb-1"><h4 class="text-amber-800 font-bold text-sm">Attitude</h4><span class="text-xl text-amber-600 font-bold" id="num-attitude">?</span></div>
+                            <p class="text-xs text-amber-700/80 mb-2" id="def-attitude"></p>
+                            <p class="text-xs text-amber-900 font-semibold bg-white/70 p-2.5 rounded-xl border border-amber-100" id="desc-attitude"></p>
+                        </div>
+
+                        <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100">
+                            <div class="flex justify-between items-baseline mb-1"><h4 class="text-amber-800 font-bold text-sm">Divine Purpose</h4><span class="text-xl text-amber-600 font-bold" id="num-purpose">?</span></div>
+                            <p class="text-xs text-amber-700/80 mb-2" id="def-purpose"></p>
+                            <p class="text-xs text-amber-900 font-semibold bg-white/70 p-2.5 rounded-xl border border-amber-100" id="desc-purpose"></p>
                         </div>
 
                     </div>
@@ -260,12 +261,12 @@
 
         const numerologyMeaning = {
           destiny: { description: "Influential number for personal motivations and career aspirations.", 1: "Path of the risk-taker, entrepreneur, and independent trail-blazer.", 2: "Path of the homemaker, team player, caretaker, and collector.", 3: 'Path of the adventurous, creative, "Peter Pan" or disciplined scientific mind.', 4: "Path of the hard-working, dedicated employee/entrepreneur and loyal friend.", 5: "Path of the energized freedom fighter, promoter, and stylish world traveler.", 6: "Path of the good citizen, patient teacher, champion of fairness and justice.", 7: "Path of the scholar, perfectionist, genius, and keeper of secrets.", 8: "Path of the matriarch/patriarch, judge, producer/director, and orchestrator.", 9: 'Path of the aristocratic "old soul" and universal humanitarian.', 11: "Path of the intuitive advisor/counselor, peace-maker, and enlightened public figure.", 22: "Path of the enlightened, prudent, organized, and inspiring visionary." },
-          personality: { description: "Describes the behind-the-scenes or private self.", 1: "Dynamic, strong-willed, and a natural leader with single-minded focus.", 2: "Peacemaker, nurturing, caring, and an indispensable friend or boss.", 3: "Awesomely creative, imaginative, entertaining, and a superlative host.", 4: "Dedicated, detail-oriented, tireless worker whose word is gold.", 5: "Intelligent, enthusiastic, and genial nature that inspires others.", 6: "Responsible, people-oriented, and a lover of beauty, nature, and home.", 7: "Analytical, research-oriented, with a vast quest for knowledge.", 8: "Ambitious, organized, quality operator, born to lead with a penchant for justice.", 9: "Multi-talented, creative, competent, in true character when serving others." },
-          attitude: { description: "How you react to circumstances, most powerful in youth.", 1: "Strong will and independent nature. Prefers making own choices.", 2: "Sweet, gentle, kind, and caring. Loves to nurture and be nurtured.", 3: "Naturally entertaining, adventuresome, and captivating once comfortable.", 4: "Sensitive, stubborn temperament, but dutiful with praise.", 5: "Energy abounding! Needs constant mental/physical stimulation.", 6: "Responsible, conscientious, considerate, and kind to all things of nature.", 7: "Brilliant mind needing alone time to indulge quest for knowledge.", 8: "Exemplary in all things, originating from a need to feel in control.", 9: "Adult-like sensibility at an early age. Fuelled by praise and encouragement." },
-          character: { description: "Primary public and social qualities.", 1: "Original, innovative mind with steadfast focus on goals.", 2: "Diplomacy, good-naturedness, and ambassador-like persona.", 3: "Optimistic, enthusiastic, and creative abilities to entertain/inspire.", 4: "Conscientious, organized, systematic, and reliable worker/leader.", 5: "Charming, articulate, flexible, and style-conscious trendsetter.", 6: "Born humanitarian, community-oriented parent/teacher/leader.", 7: "Philosophically avant-garde, knowledge-seeking genius.", 8: "Commanding, exemplary teacher/judge/director persona.", 9: "Aristocratic, socially pleasing humanitarian focusing on selfless service." },
-          soul: { description: "View of your intuitive, soulful self.", 1: "Urge to be innovative, creative, and lead masses to higher consciousness.", 2: "Urge to effect peace, harmony, and finesse in nurturing others.", 3: "Urge to bring joy, enthusiasm, passion, and arouse imagination.", 4: "Urge to deliver honesty, dependability, practicality, and determination.", 5: "Urge to use abounding energy and progressive mental attributes.", 6: "Urge to be responsible, conscientious, caring, and kind.", 7: "Urge to use analytical nature to discover something meaningful.", 8: "Urge to bring quality, consistency, and inspiration to others.", 9: "Urge to use aristocratic and humane qualities to set an example." },
-          agenda: { description: "Innate (hidden) desires.", 1: "Innate desire to be independent, lead, and innovate.", 2: "Desire to live life in peace and harmony.", 3: "Desire to be creative, entertaining, and bring joy.", 4: "Logic, organization, and perseverance to manifest peace of mind.", 5: "Desire for freedom, travel, and living unrestrained.", 6: "Strong humanitarian focus helping and caring for earth and humans.", 7: "Thirst for knowledge in sciences, philosophies, and arts.", 8: "Desire for power, acclaim, and amassing wealth.", 9: "Desire to attain finest things or live a wholly humanitarian life." },
-          purpose: { description: "Farewell-performance vibration in latter years.", 1: "Legacy of something pioneered—a concept, product, or foundation.", 2: "Bring peace, comfort, and harmony to fellow humans.", 3: "Use creative/imaginative talents to produce art, books, or ideas.", 4: "Build a stable foundation that helps people with a humanitarian focus.", 5: "Effect progressive changes making life better for future generations.", 6: "Teach, instigate humanitarian causes, and care for home/family.", 7: "Impart gathered scientific, artistic, or philosophical knowledge.", 8: "Lead, direct, and help the less fortunate through philanthropy.", 9: "Universal humanitarian working for the betterment of mankind." }
+          character: { description: "Represents primarily your public and social qualities.", 1: "Possessing an original and innovative mind, with steadfast focus on goals.", 2: "Diplomacy, good-naturedness, and ambassador-like persona.", 3: "Optimistic, enthusiastic, and creative abilities to entertain/inspire.", 4: "Conscientious, organized, systematic, and reliable worker/leader.", 5: "Charming, articulate, flexible, and style-conscious trendsetter.", 6: "Born humanitarian, community-oriented parent/teacher/leader.", 7: "Philosophically avant-garde, knowledge-seeking genius.", 8: "Commanding, exemplary teacher/judge/director persona.", 9: "Aristocratic, socially pleasing humanitarian focusing on selfless service.", 11: "Empathetic, enlightened, and understanding counselor or community leader.", 22: "High-minded builder of empires and spiritually-oriented organizer." },
+          soul: { description: "Presents a view of your intuitive, soulful self.", 1: "Urge to be innovative, creative, and lead masses to higher consciousness.", 2: "Urge to effect peace, harmony, and finesse in nurturing others.", 3: "Urge to bring joy, enthusiasm, passion, and arouse imagination.", 4: "Urge to deliver honesty, dependability, practicality, and determination.", 5: "Urge to use abounding energy and progressive mental attributes.", 6: "Urge to be responsible, conscientious, caring, and kind.", 7: "Urge to use analytical nature to discover something meaningful.", 8: "Urge to bring quality, consistency, and inspiration to others.", 9: "Urge to use aristocratic and humane qualities to set an example.", 11: "Urge to bring peace, harmony, beauty and honorability.", 22: "Master Builder whose soulful desire is to help and serve mankind." },
+          agenda: { description: "This vibration offers your innate (hidden) desires.", 1: "Innate desire to be independent, lead, and innovate.", 2: "Desire to live life in peace and harmony.", 3: "Desire to be creative, entertaining, and bring joy.", 4: "Logic, organization, and perseverance to manifest peace of mind.", 5: "Desire for freedom, travel, and living unrestrained.", 6: "Strong humanitarian focus helping and caring for earth and humans.", 7: "Thirst for knowledge in sciences, philosophies, and arts.", 8: "Desire for power, acclaim, and amassing wealth.", 9: "Desire to attain finest things or live a wholly humanitarian life.", 11: "Innate need to minister, counsel, or participate in the healing arts.", 22: "Desire to do something grand for mankind." },
+          personality: { description: "Describes the behind-the-scenes or private you.", 1: "Dynamic, strong-willed, and a natural leader with single-minded focus.", 2: "Peacemaker, nurturing, caring, and an indispensable friend or boss.", 3: "Awesomely creative, imaginative, entertaining, and a superlative host.", 4: "Dedicated, detail-oriented, tireless worker whose word is gold.", 5: "Intelligent, enthusiastic, and genial nature that inspires others.", 6: "Responsible, people-oriented, and a lover of beauty, nature, and home.", 7: "Analytical, research-oriented, with a vast quest for knowledge.", 8: "Ambitious, organized, quality operator, born to lead with a penchant for justice.", 9: "Multi-talented, creative, competent, in true character when serving others.", 10: "Independent, considerate, responsible with a take-charge nature.", 11: "Sensitive, intelligent, original, inspiring, and a good listener.", 12: "Charming, personable, creative with strong determination.", 13: "Astute, independent, down-to-earth, and forthright.", 14: "Storehouse of energy with a steel-trap mind churning out ideas.", 15: "Independent, artistic/scientific mind craving research.", 16: "Intellectual, analytical mind requiring periods of alone time.", 17: "Intelligent, ambitious, courageous, energy to run a country.", 18: "Multi-talented powerhouse of wisdom, strength, and compassion.", 19: "Adventuresome, yearning for variety, tenacious and honorable.", 20: "Warm-hearted, helpful, prudent nature retaining many friends.", 21: "Good natured, optimistic, inspirational, and generous.", 22: "Extraordinary discipline, energy, logic, and sensitivity.", 23: "Nurturing, fun-loving, freedom-oriented spirit.", 24: "Charming, social, witty, and goes the extra mile.", 25: "Witty, wise, highly compassionate, and responsible to humanity.", 26: "Steadfast and in command with a fondness for protocol.", 27: "Old soul, vast innate knowledge and extraordinary perceptivity.", 28: "Charming, independent, born diplomat and leader.", 29: "Gentle, sensitive, combined with energy and charisma.", 30: "Intelligent, creative, fun-loving with a great sense of humor.", 31: "Creative, innovative, conscientious, dependable, and timely." },
+          attitude: { description: "How you react to circumstances, most powerful in youth.", 1: "Strong will and independent nature. Prefers making own choices.", 2: "Sweet, gentle, kind, and caring. Loves to nurture and be nurtured.", 3: "Naturally entertaining, adventuresome, and captivating once comfortable.", 4: "Sensitive, stubborn temperament, but dutiful with praise.", 5: "Energy abounding! Needs constant mental/physical stimulation.", 6: "Responsible, conscientious, considerate, and kind to all things of nature.", 7: "Brilliant mind needing alone time to indulge quest for knowledge.", 8: "Exemplary in all things, originating from a need to feel in control.", 9: "Adult-like sensibility at an early age. Fuelled by praise and encouragement.", 11: "Super sensitive, highly intuitive, high-minded and lover of music.", 22: "Stubborn streak but very purposeful, enterprising, and inspired." },
+          purpose: { description: "Farewell-performance vibration in latter years.", 1: "Legacy of something pioneered—a concept, product, or foundation.", 2: "Bring peace, comfort, and harmony to fellow humans.", 3: "Use creative/imaginative talents to produce art, books, or ideas.", 4: "Build a stable foundation that helps people with a humanitarian focus.", 5: "Effect progressive changes making life better for future generations.", 6: "Teach, instigate humanitarian causes, and care for home/family.", 7: "Impart gathered scientific, artistic, or philosophical knowledge.", 8: "Lead, direct, and help the less fortunate through philanthropy.", 9: "Universal humanitarian working for the betterment of mankind.", 11: "Help people on spiritual, psychological, and mental planes.", 22: "Organize and build a business enterprise offering service to the world." }
         };
 
         const letter2number = { A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, G: 7, H: 8, I: 9, J: 1, K: 2, L: 3, M: 4, N: 5, O: 6, P: 7, Q: 8, R: 9, S: 1, T: 2, U: 3, V: 4, W: 5, X: 6, Y: 7, Z: 8 };
@@ -275,15 +276,27 @@
         function calculateSallyFaubionNumerology(name, dobString) {
             let m="", d="", y="";
             if (dobString) { const p = dobString.split('-'); y = p[0]; m = p[1]; d = p[2]; }
-            const destiny = reduceNumber(m + d + y); const personality = d ? parseInt(d, 10).toString() : "0"; const attitude = reduceNumber(m + d);
+            const destiny = reduceNumber(m + d + y); 
+            const personality = d ? parseInt(d, 10).toString() : "0"; 
+            const attitude = reduceNumber(m + d);
+            
             let uName = (name || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z]/g, "");
             let numAll = [], numV = [], numC = []; let prevCat = null;
             
             for (let i = 0; i < uName.length; i++) {
                 let L = uName[i], num = letter2number[L] || 0, cv = letterCV[L];
                 numAll.push(num);
-                const addV = () => { numV.push(num); prevCat = 0; }; const addC = () => { numC.push(num); prevCat = 1; };
-                if (cv === 1) addC(); else if (cv === 0) { if (L === "Y") { if (prevCat === 1) addV(); else if (i < uName.length - 1 && letterCV[uName[i + 1]] === 1) addV(); else addC(); } else addV(); }
+                const addV = () => { numV.push(num); prevCat = 0; }; 
+                const addC = () => { numC.push(num); prevCat = 1; };
+                
+                if (cv === 1) addC(); 
+                else if (cv === 0) { 
+                    if (L === "Y") { 
+                        if (prevCat === 1) addV(); 
+                        else if (i < uName.length - 1 && letterCV[uName[i + 1]] === 1) addV(); 
+                        else addC(); 
+                    } else addV(); 
+                }
             }
             
             const character = reduceNumber("" + numAll.reduce((a, b) => a + b, 0));
@@ -292,13 +305,13 @@
             const purpose = reduceNumber("" + (Number(destiny) + Number(character)));
             
             return {
-                destiny: { num: destiny, text: numerologyMeaning.destiny[destiny] || "Insight profile pending." },
-                character: { num: character, text: numerologyMeaning.character[character] || "Insight profile pending." },
-                soul: { num: soul, text: numerologyMeaning.soul[soul] || "Insight profile pending." },
-                agenda: { num: agenda, text: numerologyMeaning.agenda[agenda] || "Insight profile pending." },
-                personality: { num: personality, text: numerologyMeaning.personality[personality] || "Insight profile pending." },
-                attitude: { num: attitude, text: numerologyMeaning.attitude[attitude] || "Insight profile pending." },
-                purpose: { num: purpose, text: numerologyMeaning.purpose[purpose] || "Insight profile pending." }
+                destiny: { num: destiny, text: (numerologyMeaning.destiny[destiny] || numerologyMeaning.destiny[reduceNumber(destiny)] || "Analysis profile pending.") },
+                character: { num: character, text: (numerologyMeaning.character[character] || numerologyMeaning.character[reduceNumber(character)] || "Analysis profile pending.") },
+                soul: { num: soul, text: (numerologyMeaning.soul[soul] || numerologyMeaning.soul[reduceNumber(soul)] || "Analysis profile pending.") },
+                agenda: { num: agenda, text: (numerologyMeaning.agenda[agenda] || numerologyMeaning.agenda[reduceNumber(agenda)] || "Analysis profile pending.") },
+                personality: { num: personality, text: (numerologyMeaning.personality[personality] || numerologyMeaning.personality[reduceNumber(personality)] || "Analysis profile pending.") },
+                attitude: { num: attitude, text: (numerologyMeaning.attitude[attitude] || numerologyMeaning.attitude[reduceNumber(attitude)] || "Analysis profile pending.") },
+                purpose: { num: purpose, text: (numerologyMeaning.purpose[purpose] || numerologyMeaning.purpose[reduceNumber(purpose)] || "Analysis profile pending.") }
             };
         }
 
@@ -329,13 +342,18 @@
             document.getElementById('res-wemwbs').innerText = `${wem}/70`;
             document.getElementById('interp-wemwbs').innerText = getWemwbsInterpretation(wem);
 
+            // Compute and display numerology safely
             const dob = raw['demo-dob'] || '';
             const numbers = calculateSallyFaubionNumerology(name, dob);
             
             ['destiny', 'character', 'soul', 'agenda', 'personality', 'attitude', 'purpose'].forEach(cat => {
-                document.getElementById(`num-${cat}`).innerText = numbers[cat].num || '?';
-                document.getElementById(`def-${cat}`).innerText = numerologyMeaning[cat].description;
-                document.getElementById(`desc-${cat}`).innerText = numbers[cat].text;
+                const numEl = document.getElementById(`num-${cat}`);
+                const defEl = document.getElementById(`def-${cat}`);
+                const descEl = document.getElementById(`desc-${cat}`);
+                
+                if(numEl) numEl.innerText = numbers[cat].num || '?';
+                if(defEl) defEl.innerText = numerologyMeaning[cat].description || '';
+                if(descEl) descEl.innerText = numbers[cat].text || '';
             });
 
             const ctx = document.getElementById('resultsChart').getContext('2d');
