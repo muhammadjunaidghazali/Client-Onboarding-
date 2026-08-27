@@ -142,6 +142,16 @@
                     <label class="block text-sm font-semibold text-slate-600 mb-2 i18n-text" data-en="Contact Number" data-ur="Rabta / Phone Number">Contact Number</label>
                     <input type="tel" id="demo-contact" class="save-target error-highlight w-full bg-white border border-slate-200 rounded-2xl p-4 text-slate-800 focus:outline-none focus:border-[#479375] transition-all">
                 </div>
+                
+                <!-- Informed Consent Checkbox -->
+                <div class="md:col-span-2 mt-4">
+                    <label class="flex items-start gap-4 cursor-pointer p-4 bg-slate-50 border border-slate-200 rounded-2xl hover:bg-slate-100 transition-colors">
+                        <input type="checkbox" id="demo-consent" class="save-target mt-1 w-5 h-5 text-[#479375] border-slate-300 rounded focus:ring-[#479375]">
+                        <span class="text-sm text-slate-600 font-semibold leading-relaxed i18n-text consent-label transition-colors" data-en="I consent to sharing this personal and psychological data for clinical assessment purposes. I understand it will be securely transmitted and stored by my practitioner." data-ur="Main apna zaati aur nafsiati data clinical assessment ke liye share karne par raazi hoon. Main samajhta hoon ke yeh mehfooz tareeqay se bheja aur store kiya jayega.">
+                            I consent to sharing this personal and psychological data for clinical assessment purposes. I understand it will be securely transmitted and stored by my practitioner.
+                        </span>
+                    </label>
+                </div>
             </div>
         </div>
 
@@ -152,6 +162,22 @@
         <!-- CLIENT VIEW: BOOKING PAGE -->
         <!-- ========================================== -->
         <div id="step-booking" class="step-section text-center py-16">
+            
+            <!-- Hidden Crisis Banner (Triggered by PHQ-9 Q9) -->
+            <div id="crisis-banner" class="hidden max-w-2xl mx-auto mb-10 bg-red-50 border border-red-200 rounded-3xl p-6 text-left shadow-sm">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+                    <div class="bg-red-100 p-3 rounded-full flex-shrink-0">
+                        <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-red-800 text-lg mb-2 i18n-text" data-en="Immediate Support is Available" data-ur="Fauri Madad Dastiyab Hai">Immediate Support is Available</h3>
+                        <p class="text-red-700 text-sm leading-relaxed font-semibold i18n-text" data-en="Emergency Helpline! 0331 777 7784 (Mon – Fri 09:00 am – 05:00PM)<br>Embrace now covers crisis intervention, online counseling, and discreet facility transport." data-ur="Emergency Helpline! 0331 777 7784 (Peer – Juma 09:00 am – 05:00 PM)<br>Embrace ab crisis intervention, online counseling, aur khufiya facility transport faraham karta hai.">
+                            Emergency Helpline! 0331 777 7784 (Mon – Fri 09:00 am – 05:00PM)<br>Embrace now covers crisis intervention, online counseling, and discreet facility transport.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-[#ECFDF5] mb-8 shadow-sm border border-white">
                 <svg class="w-12 h-12 text-[#10B981]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
             </div>
@@ -174,7 +200,7 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- CLINICIAN DASHBOARDS (Left as EN only)   -->
+        <!-- CLINICIAN DASHBOARDS -->
         <!-- ========================================== -->
         <div id="step-admin-list" class="step-section">
             <div class="flex justify-between items-end mb-10 border-b border-slate-100 pb-6">
@@ -206,7 +232,6 @@
             </div>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                <!-- Data layout same as previous (left in English as it's for the clinician) -->
                 <div>
                     <h3 class="text-xs font-bold text-slate-400 mb-5 tracking-widest uppercase">Psychometric Telemetry</h3>
                     <div class="space-y-4">
@@ -461,10 +486,8 @@
             renderScale('quantitative-container', 'das', 'Please select how much these applied to you over the past week:', 'Pichle ek hafte mein yeh baatein aap par kitni lagoo huin:', 3, dass21_qs, dass_opts, 0);
             renderScale('quantitative-container', 'wem', 'Choose the answer that best describes your experience over the last 2 weeks:', 'Pichle 2 hafton ke tajarbe ke mutabiq behtareen jawab chunein:', 4, wemwbs_qs, wemwbs_opts, 1);
             
-            // Re-apply active class to current step if it was a scale
             if (currentIndex > 0 && currentIndex < sequence.length - 1) {
-                const currentStepId = sequence[currentIndex];
-                const el = document.getElementById(currentStepId);
+                const el = document.getElementById(sequence[currentIndex]);
                 if(el) el.classList.add('active');
             }
         }
@@ -473,36 +496,37 @@
         // LANGUAGE TOGGLE
         // ==========================================
         function toggleLanguage() {
-            saveDataLocally(); // Save everything before rebuilding UI
+            saveDataLocally(); 
             currentLang = currentLang === 'en' ? 'ur' : 'en';
             
-            // Update button text
             document.getElementById('lang-btn').innerText = currentLang === 'en' ? 'Roman Urdu Mode' : 'English Mode';
             
-            // Update static elements
             document.querySelectorAll('.i18n-text').forEach(el => {
                 if(el.tagName === 'OPTION') {
                     el.text = el.getAttribute(`data-${currentLang}`);
+                } else if (el.innerHTML.includes('<svg') || el.innerHTML.includes('<path')) {
+                    // Skip elements with complex inner SVGs like the button
+                    const textNode = el.querySelector('span') || el;
+                    if(textNode.hasAttribute(`data-${currentLang}`)) {
+                        textNode.innerHTML = textNode.getAttribute(`data-${currentLang}`);
+                    }
                 } else {
-                    // Preserve any inner span structures if needed, otherwise standard text replace
-                    el.innerText = el.getAttribute(`data-${currentLang}`);
+                    el.innerHTML = el.getAttribute(`data-${currentLang}`);
                 }
             });
 
-            // Rebuild dynamic forms
             buildQualitativeUI();
             rebuildScales();
             
-            // Re-bind listeners for new textareas
             document.querySelectorAll('.auto-resize').forEach(textarea => {
                 textarea.addEventListener('input', function() {
                     this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px';
                 });
             });
 
-            loadData(); // Restore user inputs into the new translated fields
+            loadData(); 
+            updateUIState(); // Refresh button texts
         }
-
 
         // ==========================================
         // VALIDATION LOGIC
@@ -514,10 +538,17 @@
             let isValid = true;
             let firstInvalid = null;
 
-            const inputs = currentSection.querySelectorAll('input[type="text"], input[type="date"], input[type="tel"], select, textarea');
+            // Validate inputs and textareas
+            const inputs = currentSection.querySelectorAll('input[type="text"], input[type="date"], input[type="tel"], select, textarea, input[type="checkbox"]');
             inputs.forEach(input => {
                 if (input.classList.contains('save-target')) {
-                    if (!input.value || input.value.trim() === '') {
+                    if (input.type === 'checkbox') {
+                        if (!input.checked) {
+                            isValid = false;
+                            input.nextElementSibling.classList.add('text-red-500');
+                            if (!firstInvalid) firstInvalid = input.parentElement;
+                        }
+                    } else if (!input.value || input.value.trim() === '') {
                         isValid = false;
                         input.classList.remove('border-slate-200');
                         input.classList.add('border-red-400', 'bg-red-50');
@@ -526,6 +557,7 @@
                 }
             });
 
+            // Validate Radios
             const radios = currentSection.querySelectorAll('input[type="radio"].save-target-radio');
             const radioNames = new Set();
             radios.forEach(r => radioNames.add(r.name));
@@ -541,8 +573,6 @@
                         container.classList.add('border-l-4', 'border-red-400', 'pl-4', '-ml-4');
                         if (!firstInvalid) firstInvalid = container;
                     }
-                } else if(container) {
-                    container.classList.remove('border-l-4', 'border-red-400', 'pl-4', '-ml-4');
                 }
             });
 
@@ -562,7 +592,10 @@
         function saveDataLocally() {
             const data = {};
             document.querySelectorAll('input.save-target, textarea.save-target, select.save-target').forEach(el => { 
-                if(el.id) data[el.id] = el.value; 
+                if(el.id) {
+                    if (el.type === 'checkbox') data[el.id] = el.checked;
+                    else data[el.id] = el.value;
+                } 
             });
             document.querySelectorAll('input[type="radio"].save-target-radio:checked').forEach(el => { 
                 data[el.name] = el.value; 
@@ -570,7 +603,10 @@
             try { localStorage.setItem('aura_intake_data', JSON.stringify(data)); } catch(e) {}
             
             const status = document.getElementById('save-status');
-            if(status) { status.style.opacity = '1'; setTimeout(() => { status.style.opacity = '0'; }, 2000); }
+            if(status && currentIndex < sequence.length - 1) { 
+                status.style.opacity = '1'; 
+                setTimeout(() => { status.style.opacity = '0'; }, 2000); 
+            }
             return data;
         }
 
@@ -581,7 +617,13 @@
             const data = JSON.parse(raw);
             
             document.querySelectorAll('input.save-target, textarea.save-target, select.save-target').forEach(el => {
-                if(el.id && data[el.id]) el.value = data[el.id];
+                if(el.id && data[el.id] !== undefined) {
+                    if (el.type === 'checkbox') {
+                        el.checked = data[el.id];
+                        if(el.checked) el.nextElementSibling.classList.remove('text-red-500');
+                    }
+                    else el.value = data[el.id];
+                }
             });
             document.querySelectorAll('input[type="radio"].save-target-radio').forEach(el => {
                 if(data[el.name] === el.value) el.checked = true;
@@ -590,6 +632,17 @@
 
         function submitToDatabase() {
             const data = saveDataLocally();
+            
+            // Check Crisis Protocol (PHQ-9 Question 9 is index 8)
+            if (data['phq_8'] && parseInt(data['phq_8']) > 0) {
+                document.getElementById('crisis-banner').classList.remove('hidden');
+            } else {
+                document.getElementById('crisis-banner').classList.add('hidden');
+            }
+
+            // Wipe local storage for privacy on shared devices
+            try { localStorage.removeItem('aura_intake_data'); } catch(e) {}
+
             if(!SCRIPT_URL) return;
             fetch(SCRIPT_URL, {
                 method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
@@ -597,10 +650,15 @@
             }).catch(error => console.error('Error securely transmitting data.'));
         }
 
-        // Clear error highlighting instantly when user types or selects an answer
+        // Clear error highlighting instantly
         document.addEventListener('change', (e) => { 
             if(e.target.classList.contains('save-target')) {
-                e.target.classList.remove('border-red-400', 'bg-red-50'); e.target.classList.add('border-slate-200');
+                if(e.target.type === 'checkbox') {
+                    if(e.target.checked) e.target.nextElementSibling.classList.remove('text-red-500');
+                } else {
+                    e.target.classList.remove('border-red-400', 'bg-red-50'); 
+                    e.target.classList.add('border-slate-200');
+                }
                 saveDataLocally(); 
             } else if (e.target.classList.contains('save-target-radio')) {
                 const container = e.target.closest('.radio-group-container');
@@ -622,7 +680,6 @@
             const percentage = Math.round((currentIndex / (sequence.length - 1)) * 100);
             document.getElementById('progress-bar').style.width = percentage + '%';
             
-            // i18n support for progress text
             const progText = document.getElementById('progress-text');
             progText.innerText = currentLang === 'en' ? `${percentage}% Complete` : `${percentage}% Mukammal`;
             
@@ -799,9 +856,6 @@
             });
         }
 
-        // ==========================================
-        // INITIALIZATION
-        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
             buildQualitativeUI();
             rebuildScales();
