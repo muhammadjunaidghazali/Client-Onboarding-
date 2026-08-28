@@ -728,7 +728,7 @@ const qualSteps = [
         let currentLang = 'en';
         let portalMode = false;
         let clinicianAuthenticated = false;
-        let clinicianToken = null;
+        let clinicianPin = null;
         let clinicianRecords = [];
         let clinicianSessionTimer = null;
         let clinicianSessionExpiresAt = 0;
@@ -739,7 +739,7 @@ const qualSteps = [
 
         const STORAGE_KEY = 'ghazali_intake_draft_v2';
         const SESSION_MINUTES = 15;
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxwvJxARJBdTSXyNYy9YSJPYoC9jl-FWFDJWD7YzNfFcpqDmgqVqJfvdw-bMx3fkiAU/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzo95fOPiFF6XdCMnEk924hf11HRHm6XifOyQ2yXeWwe0XZxXyhY8Hwex31ANxrWlOj/exec';
 
         function safeJsonParse(value) {
             try { return JSON.parse(value); } catch { return null; }
@@ -1407,18 +1407,16 @@ const qualSteps = [
         async function postApi(payload) {
             const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'text/plain;charset=utf-8'
-                },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(payload)
             });
 
-            const data = await response.json();
-
-            if (!response.ok || data?.error) {
-                throw new Error(data?.error || 'Request failed');
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
             }
 
+            const data = await response.json();
+            if (data?.error) throw new Error(data.error);
             return data;
         }
 
@@ -1427,8 +1425,7 @@ const qualSteps = [
             container.innerHTML = '<div class="text-center py-16 text-slate-400 font-semibold">Loading patient records...</div>';
 
             if (!clinicianToken) {
-                container.innerHTML = '<div class="text-center py-16 text-red-600 font-extrabold">Clinician session has expired. Please sign in again.</div>';
-                return;
+                throw new Error('No active clinician session.');
             }
 
             try {
@@ -1437,34 +1434,36 @@ const qualSteps = [
                     token: clinicianToken
                 });
 
-                clinicianRecords = Array.isArray(data.clients) ? data.clients : [];
+                if (!Array.isArray(data.clients)) {
+                    throw new Error('Invalid patient record response.');
+                }
+
+                clinicianRecords = data.clients;
                 showAdminList(clinicianRecords);
             } catch (error) {
                 console.error(error);
-                clinicianRecords = [];
-                clinicianToken = null;
-                clinicianAuthenticated = false;
-                container.innerHTML = '<div class="text-center py-16"><p class="text-red-600 font-extrabold">Access denied or connection error.</p><p class="text-sm text-slate-400 mt-2">Please sign in again.</p></div>';
-                showToast('Clinician session could not be verified.');
+                container.innerHTML = '<div class="text-center py-16"><p class="text-red-600 font-extrabold">Unable to load the clinician portal.</p><p class="text-sm text-slate-400 mt-2">Your session may have expired. Please sign in again.</p></div>';
+
+                if (String(error.message || '').toLowerCase().includes('expired') || String(error.message || '').toLowerCase().includes('unauthorized')) {
+                    logoutClinician(false);
+                } else {
+                    showToast('Clinician portal could not be opened.');
+                }
             }
         }
 
         function openClinicianModal() {
-            if (clinicianAuthenticated && clinicianToken && Date.now() < clinicianSessionExpiresAt) {
+            if (clinicianAuthenticated && Date.now() < clinicianSessionExpiresAt) {
                 showAdminList(clinicianRecords);
                 return;
             }
-
             clinicianAuthenticated = false;
-            clinicianToken = null;
-
+            clinicianPin = null;
             const modal = document.getElementById('clinician-modal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-
             document.getElementById('clinician-pin').value = '';
             document.getElementById('clinician-login-error').classList.add('hidden');
-
             setTimeout(() => document.getElementById('clinician-pin').focus(), 50);
         }
 
@@ -1494,28 +1493,27 @@ const qualSteps = [
             try {
                 const data = await postApi({
                     action: 'clinician_login',
-                    pin: pin
+                    pin
                 });
 
-                if (!data.token || !Array.isArray(data.clients)) {
-                    throw new Error('Invalid authentication response');
+                if (data.status !== 'success' || !data.token || !Array.isArray(data.clients)) {
+                    throw new Error('Unauthorized');
                 }
 
                 clinicianAuthenticated = true;
                 clinicianToken = data.token;
-                clinicianSessionExpiresAt = Date.now() + SESSION_MINUTES * 60 * 1000;
+                clinicianSessionExpiresAt = Date.now() + ((Number(data.expiresIn) || SESSION_MINUTES * 60) * 1000);
+                clinicianRecords = data.clients;
 
                 startClinicianSessionTimer();
                 closeClinicianModal();
-                showAdminList(data.clients);
+                showAdminList(clinicianRecords);
                 showToast('Clinician portal opened.', 'success');
-
             } catch (e) {
                 console.error(e);
                 error.textContent = 'Access denied. Please check your PIN or connection.';
                 error.classList.remove('hidden');
                 input.select();
-
             } finally {
                 button.disabled = false;
                 button.textContent = 'Enter Secure Portal';
@@ -1524,9 +1522,8 @@ const qualSteps = [
 
         function startClinicianSessionTimer() {
             clearInterval(clinicianSessionTimer);
-
             clinicianSessionTimer = setInterval(() => {
-                if (!clinicianAuthenticated || !clinicianToken || Date.now() >= clinicianSessionExpiresAt) {
+                if (!clinicianAuthenticated || Date.now() >= clinicianSessionExpiresAt) {
                     logoutClinician(false);
                 }
             }, 1000);
@@ -1537,32 +1534,25 @@ const qualSteps = [
 
             clinicianAuthenticated = false;
             clinicianToken = null;
+            clinicianPin = null;
             clinicianRecords = [];
             activePatientData = null;
             portalMode = false;
-
             clearInterval(clinicianSessionTimer);
             clinicianSessionExpiresAt = 0;
 
-            document.getElementById('patient-search').value = '';
-            document.getElementById('patient-filter').value = 'all';
-
             if (token) {
                 try {
-                    await postApi({
-                        action: 'clinician_logout',
-                        token: token
-                    });
+                    await postApi({ action: 'clinician_logout', token });
                 } catch (error) {
-                    console.warn('Clinician logout could not be confirmed by server.', error);
+                    console.warn('Clinician logout request failed:', error);
                 }
             }
 
+            document.getElementById('patient-search').value = '';
+            document.getElementById('patient-filter').value = 'all';
             showStep(0, false);
-
-            if (showMessage) {
-                showToast('Clinician session ended.');
-            }
+            if (showMessage) showToast('Clinician session ended.');
         }
 
         document.addEventListener('change', (e) => {
@@ -1590,7 +1580,7 @@ const qualSteps = [
         document.getElementById('clinician-pin').addEventListener('keydown', e => { if (e.key === 'Enter') submitClinicianLogin(); });
         document.getElementById('clinician-modal').addEventListener('click', e => { if (e.target.id === 'clinician-modal') closeClinicianModal(); });
         document.getElementById('admin-logout').addEventListener('click', () => logoutClinician(true));
-        document.getElementById('admin-refresh').addEventListener('click', () => clinicianToken && fetchPatients());
+        document.getElementById('admin-refresh').addEventListener('click', () => fetchPatients());
         document.getElementById('patient-search').addEventListener('input', renderPatientList);
         document.getElementById('patient-filter').addEventListener('change', renderPatientList);
         document.getElementById('results-back').addEventListener('click', goBackToPatients);
