@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#479375">
-    <title>Ghazali Clinical Practice | Private Intake</title>
+    <title>Ghazali Clinical Practice | Longitudinal Clinical Intake</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -401,6 +401,37 @@
                         <label for="demo-contact" class="block text-sm font-extrabold text-slate-600 mb-2 i18n-text" data-en="Contact number" data-ur="Rabta number">Contact number</label>
                         <input type="tel" id="demo-contact" class="input-base save-target" autocomplete="tel" maxlength="30" inputmode="tel">
                     </div>
+                    <div>
+                        <label for="client-id" class="block text-sm font-extrabold text-slate-600 mb-2">Client reference code <span class="text-xs text-slate-400 font-semibold">(optional for first intake)</span></label>
+                        <input type="text" id="client-id" class="input-base save-target" maxlength="40" autocomplete="off" placeholder="e.g. GCG-AB12CD">
+                        <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">Use the same code for future check-ins. A new code is generated automatically when this is left blank.</p>
+                    </div>
+                    <div>
+                        <label for="assessment-type" class="block text-sm font-extrabold text-slate-600 mb-2">Assessment type</label>
+                        <select id="assessment-type" class="input-base save-target">
+                            <option value="Comprehensive intake">Comprehensive intake</option>
+                            <option value="Routine check-in">Routine check-in</option>
+                            <option value="Mid-treatment review">Mid-treatment review</option>
+                            <option value="Termination review">Termination review</option>
+                            <option value="Follow-up">Follow-up</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="treatment-phase" class="block text-sm font-extrabold text-slate-600 mb-2">Treatment phase</label>
+                        <select id="treatment-phase" class="input-base save-target">
+                            <option value="Intake">Intake</option>
+                            <option value="Early treatment">Early treatment</option>
+                            <option value="Active treatment" selected>Active treatment</option>
+                            <option value="Mid-treatment review">Mid-treatment review</option>
+                            <option value="Late treatment">Late treatment</option>
+                            <option value="Termination">Termination</option>
+                            <option value="Follow-up">Follow-up</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="session-number" class="block text-sm font-extrabold text-slate-600 mb-2">Session / check-in number <span class="text-xs text-slate-400 font-semibold">(optional)</span></label>
+                        <input type="number" id="session-number" min="1" max="999" class="input-base save-target" placeholder="e.g. 4">
+                    </div>
                     <div class="md:col-span-2">
                         <label class="flex items-start gap-3 cursor-pointer rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white p-4 transition-colors">
                             <input type="checkbox" id="demo-consent" class="save-target mt-1 w-5 h-5 accent-[#479375]">
@@ -411,6 +442,23 @@
             </section>
 
             <div id="qualitative-container"></div>
+
+            <section id="step-longitudinal-reflection" class="step-section pt-8" aria-labelledby="longitudinal-reflection-title">
+                <div class="section-chip mb-4"><span>7</span><span>Longitudinal reflection</span></div>
+                <h2 id="longitudinal-reflection-title" class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-3">What has changed since your last check-in?</h2>
+                <p class="text-slate-500 text-base sm:text-lg leading-relaxed mb-8 max-w-3xl">These questions help track change across counselling. They are optional during your first assessment.</p>
+                <div class="space-y-7">
+                    <div>
+                        <label for="q7-1" class="block text-lg font-extrabold text-slate-700 mb-3">What feels different since your previous assessment or session?</label>
+                        <textarea id="q7-1" maxlength="5000" class="input-base save-target optional-field auto-resize" placeholder="Share any changes you have noticed..."></textarea>
+                    </div>
+                    <div>
+                        <label for="q7-2" class="block text-lg font-extrabold text-slate-700 mb-3">What has improved, what remains difficult, or what would you like to work on next?</label>
+                        <textarea id="q7-2" maxlength="5000" class="input-base save-target optional-field auto-resize" placeholder="You can mention progress, ongoing difficulties, or new concerns..."></textarea>
+                    </div>
+                </div>
+            </section>
+
             <div id="quantitative-container"></div>
 
             <!-- Review -->
@@ -491,7 +539,7 @@
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 my-6">
-                    <div class="rounded-2xl bg-slate-50 border border-slate-100 p-4"><p class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Records</p><p id="stat-records" class="text-2xl font-extrabold text-slate-800 mt-1">0</p></div>
+                    <div class="rounded-2xl bg-slate-50 border border-slate-100 p-4"><p class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Clients</p><p id="stat-records" class="text-2xl font-extrabold text-slate-800 mt-1">0</p></div>
                     <div class="rounded-2xl bg-slate-50 border border-slate-100 p-4"><p class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Needs review</p><p id="stat-review" class="text-2xl font-extrabold text-slate-800 mt-1">0</p></div>
                     <div class="rounded-2xl bg-slate-50 border border-slate-100 p-4"><p class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Safety flags</p><p id="stat-safety" class="text-2xl font-extrabold text-slate-800 mt-1">0</p></div>
                     <div class="rounded-2xl bg-slate-50 border border-slate-100 p-4"><p class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Last update</p><p id="stat-updated" class="text-sm font-extrabold text-slate-700 mt-2">--</p></div>
@@ -512,6 +560,72 @@
 
                 <div id="client-list-container" class="space-y-3 max-h-[58vh] overflow-y-auto pr-1" aria-live="polite">
                     <div class="text-center py-16 text-slate-400">Sign in to load records.</div>
+                </div>
+            </section>
+
+            <!-- Longitudinal Client Journey -->
+            <section id="step-client-journey" class="step-section pt-8" aria-labelledby="journey-title">
+                <div class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-5 border-b border-slate-100 pb-6">
+                    <div>
+                        <div class="section-chip mb-3"><span>Longitudinal view</span></div>
+                        <h2 id="journey-title" class="text-3xl font-extrabold text-slate-800">Clinical journey</h2>
+                        <p id="journey-patient-summary" class="text-[#479375] font-extrabold text-sm mt-2">Patient timeline</p>
+                    </div>
+                    <div class="flex gap-2 no-print">
+                        <button id="journey-back" type="button" class="focus-ring px-4 py-2.5 rounded-full border border-slate-200 bg-white text-slate-700 font-extrabold text-sm">← Patient files</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 mt-6">
+                    <div class="rounded-3xl bg-white border border-slate-100 p-5 shadow-sm"><p class="text-xs uppercase tracking-wider font-extrabold text-slate-400">Assessments</p><p id="journey-assessments" class="text-3xl font-extrabold text-slate-800 mt-2">0</p></div>
+                    <div class="rounded-3xl bg-white border border-slate-100 p-5 shadow-sm"><p class="text-xs uppercase tracking-wider font-extrabold text-slate-400">Treatment span</p><p id="journey-span" class="text-sm font-extrabold text-slate-700 mt-3">--</p></div>
+                    <div class="rounded-3xl bg-white border border-slate-100 p-5 shadow-sm"><p class="text-xs uppercase tracking-wider font-extrabold text-slate-400">PHQ-9 change</p><p id="journey-phq-change" class="text-xl font-extrabold text-slate-800 mt-2">--</p></div>
+                    <div class="rounded-3xl bg-white border border-slate-100 p-5 shadow-sm"><p class="text-xs uppercase tracking-wider font-extrabold text-slate-400">GAD-7 change</p><p id="journey-gad-change" class="text-xl font-extrabold text-slate-800 mt-2">--</p></div>
+                    <div class="rounded-3xl bg-white border border-slate-100 p-5 shadow-sm"><p class="text-xs uppercase tracking-wider font-extrabold text-slate-400">WEMWBS change</p><p id="journey-wem-change" class="text-xl font-extrabold text-slate-800 mt-2">--</p></div>
+                </div>
+
+                <div id="journey-attention" class="hidden mt-5 rounded-3xl border border-amber-200 bg-amber-50 p-5">
+                    <h3 class="font-extrabold text-amber-900">Recent clinical attention</h3>
+                    <p id="journey-attention-text" class="text-sm text-amber-800 leading-relaxed mt-1"></p>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
+                    <div class="rounded-3xl bg-white border border-slate-100 p-5 shadow-sm">
+                        <div class="mb-4"><h3 class="font-extrabold text-slate-800">Quantitative trajectory</h3><p class="text-xs text-slate-400 mt-1">Raw scores over time. Scales have different ranges and are not directly comparable.</p></div>
+                        <div class="h-80"><canvas id="longitudinalChart"></canvas></div>
+                    </div>
+                    <div class="rounded-3xl bg-white border border-slate-100 p-5 shadow-sm">
+                        <div class="mb-4"><h3 class="font-extrabold text-slate-800">Current vs baseline</h3><p class="text-xs text-slate-400 mt-1">Change is shown within each instrument's own score range.</p></div>
+                        <div id="journey-score-cards" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                    </div>
+                </div>
+
+                <div class="mt-6 rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden">
+                    <div class="p-5 sm:p-6 border-b border-slate-100"><h3 class="font-extrabold text-slate-800">Theme evolution</h3><p class="text-xs text-slate-400 mt-1">A theme that is not mentioned is treated as "not mentioned", not as evidence that it has disappeared.</p></div>
+                    <div class="overflow-x-auto"><table class="w-full text-sm"><thead id="theme-evolution-head"></thead><tbody id="theme-evolution-body"></tbody></table></div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
+                    <div class="rounded-3xl bg-white border border-slate-100 shadow-sm p-5 sm:p-6">
+                        <h3 class="font-extrabold text-slate-800">Longitudinal IPA-informed synthesis</h3>
+                        <p class="text-xs text-slate-400 mt-1">How lived experience and meaning-making appear to evolve across assessments.</p>
+                        <div id="journey-ipa" class="space-y-3 mt-5"></div>
+                    </div>
+                    <div class="rounded-3xl bg-white border border-slate-100 shadow-sm p-5 sm:p-6">
+                        <h3 class="font-extrabold text-slate-800">Longitudinal mixed-method integration</h3>
+                        <p class="text-xs text-slate-400 mt-1">Relationship between narrative theme change and repeated screening measures.</p>
+                        <div id="journey-integration" class="space-y-3 mt-5"></div>
+                    </div>
+                </div>
+
+                <div class="mt-6 rounded-3xl bg-white border border-slate-100 shadow-sm p-5 sm:p-6">
+                    <h3 class="font-extrabold text-slate-800">Clinical questions for the next session</h3>
+                    <div id="journey-questions" class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5"></div>
+                </div>
+
+                <div class="mt-6 rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden">
+                    <div class="p-5 sm:p-6 border-b border-slate-100"><h3 class="font-extrabold text-slate-800">Assessment timeline</h3><p class="text-xs text-slate-400 mt-1">Open any assessment to review its full clinical record.</p></div>
+                    <div id="journey-timeline" class="divide-y divide-slate-100"></div>
                 </div>
             </section>
 
@@ -725,6 +839,7 @@ const qualSteps = [
             const wasAdmin = portalMode;
             buildQualitativeUI();
             rebuildScales();
+            ensureClientId();
             applyLanguage();
             loadData();
             bindDynamicInputs();
@@ -741,7 +856,7 @@ const qualSteps = [
             });
         }
 
-        const sequence = ['step-demographics', 'step-qual-1', 'step-qual-2', 'step-qual-3', 'step-qual-4', 'step-qual-5', 'step-qual-6', 'step-phq', 'step-gad', 'step-das', 'step-wem', 'step-review', 'step-booking'];
+        const sequence = ['step-demographics', 'step-qual-1', 'step-qual-2', 'step-qual-3', 'step-qual-4', 'step-qual-5', 'step-qual-6', 'step-longitudinal-reflection', 'step-phq', 'step-gad', 'step-das', 'step-wem', 'step-review', 'step-booking'];
         const stepMeta = [
             { label: 'About you', mins: 10 },
             { label: 'Your experience', mins: 9 },
@@ -750,7 +865,9 @@ const qualSteps = [
             { label: 'Your experience', mins: 6 },
             { label: 'Your experience', mins: 5 },
             { label: 'Your experience', mins: 4 },
+            { label: 'Change since last check-in', mins: 3 },
             { label: 'Questionnaire', mins: 3 },
+            { label: 'Questionnaire', mins: 2 },
             { label: 'Questionnaire', mins: 2 },
             { label: 'Questionnaire', mins: 2 },
             { label: 'Questionnaire', mins: 1 },
@@ -827,6 +944,21 @@ const qualSteps = [
             try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
         }
 
+        function ensureClientId() {
+            const field = document.getElementById('client-id');
+            if (!field) return;
+            if (field.value.trim()) return;
+            try {
+                const existing = localStorage.getItem('ghazali_client_id_v1');
+                if (existing) { field.value = existing; return; }
+            } catch (e) {}
+            const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let code='GCG-';
+            for(let i=0;i<6;i++) code += chars[Math.floor(Math.random()*chars.length)];
+            field.value=code;
+            try { localStorage.setItem('ghazali_client_id_v1', code); } catch(e) {}
+        }
+
         function validateCurrentStep() {
             if (portalMode || currentIndex === sequence.indexOf('step-review') || currentIndex === sequence.indexOf('step-booking')) return true;
             const section = document.getElementById(sequence[currentIndex]);
@@ -842,7 +974,7 @@ const qualSteps = [
                         input.parentElement.classList.add('border-red-300', 'bg-red-50');
                         if (!firstInvalid) firstInvalid = input.parentElement;
                     }
-                } else if (!input.value || input.value.trim() === '') {
+                } else if (!input.classList.contains('optional-field') && (!input.value || input.value.trim() === '')) {
                     valid = false;
                     input.classList.add('input-invalid');
                     if (!firstInvalid) firstInvalid = input;
@@ -871,7 +1003,7 @@ const qualSteps = [
 
         function showStep(index, animate = true) {
             if (portalMode) return;
-            document.querySelectorAll('#step-demographics, #qualitative-container .step-section, #quantitative-container .step-section, #step-review, #step-booking').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('#step-demographics, #qualitative-container .step-section, #quantitative-container .step-section, #step-longitudinal-reflection, #step-review, #step-booking').forEach(el => el.classList.remove('active'));
             const target = document.getElementById(sequence[index]);
             if (!target) return;
             target.classList.add('active');
@@ -939,13 +1071,21 @@ const qualSteps = [
                 ['Full name', data['demo-name'] || 'Not provided'],
                 ['Date of birth', data['demo-dob'] || 'Not provided'],
                 ['Gender', data['demo-gender'] || 'Not provided'],
-                ['Contact', data['demo-contact'] || 'Not provided']
+                ['Contact', data['demo-contact'] || 'Not provided'],
+                ['Client reference', data['client-id'] || 'Generated automatically'],
+                ['Assessment type', data['assessment-type'] || 'Routine check-in'],
+                ['Treatment phase', data['treatment-phase'] || 'Active treatment'],
+                ['Session / check-in', data['session-number'] || 'Not specified']
             ]});
 
             qualSteps.forEach(s => rows.push({ title: s[currentLang].title, items: [
                 ['Question 1', data[`q${s.id}-1`] || 'Not answered'],
                 ['Question 2', data[`q${s.id}-2`] || 'Not answered']
             ]}));
+            rows.push({ title: 'Longitudinal reflection', items: [
+                ['What changed', data['q7-1'] || 'Not answered'],
+                ['Improved / still difficult', data['q7-2'] || 'Not answered']
+            ]});
 
             const screening = [
                 ['PHQ-9', 'phq', 9], ['GAD-7', 'gad', 7], ['DASS-21', 'das', 21], ['WEMWBS', 'wem', 14]
@@ -1068,7 +1208,7 @@ const qualSteps = [
 
         function renderQualitativeResults(data) {
             const root = document.getElementById('qualitative-results');
-            root.innerHTML = qualSteps.map(s => `
+            const domainHtml = qualSteps.map(s => `
                 <details class="p-5 sm:p-6">
                     <summary class="flex items-center justify-between gap-3 font-extrabold text-slate-800">
                         <span>${escapeHtml(s.en.title)}</span><span class="text-xs text-slate-400">View responses</span>
@@ -1078,6 +1218,16 @@ const qualSteps = [
                         <div class="rounded-2xl bg-slate-50 p-4"><p class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-2">Question 2</p><p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">${escapeHtml(data[`q${s.id}-2`] || 'No response recorded.')}</p></div>
                     </div>
                 </details>`).join('');
+            root.innerHTML = domainHtml + `
+                <details class="p-5 sm:p-6">
+                    <summary class="flex items-center justify-between gap-3 font-extrabold text-slate-800">
+                        <span>Longitudinal reflection</span><span class="text-xs text-slate-400">View responses</span>
+                    </summary>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-5">
+                        <div class="rounded-2xl bg-slate-50 p-4"><p class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-2">What changed</p><p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">${escapeHtml(data['q7-1'] || 'No response recorded.')}</p></div>
+                        <div class="rounded-2xl bg-slate-50 p-4"><p class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-2">Improved / still difficult</p><p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">${escapeHtml(data['q7-2'] || 'No response recorded.')}</p></div>
+                    </div>
+                </details>`;
         }
 
         /*
@@ -1474,28 +1624,46 @@ const qualSteps = [
             return hasSafetyFlag(data) || phq >= 10 || gad >= 10 || dass.d >= 14 || dass.a >= 10 || dass.s >= 19;
         }
 
+        function getRecordDate(record) {
+            const raw = record?.meta?.date || record?.data?.submittedAt || record?.data?.date || '';
+            const d = new Date(raw);
+            return Number.isNaN(d.getTime()) ? new Date(0) : d;
+        }
+
+        function groupRecordsByClient(records) {
+            const groups = new Map();
+            records.map(normalizeRecord).forEach(({meta, data}) => {
+                const clientId = meta.clientId || data['client-id'] || 'UNKNOWN';
+                if (!groups.has(clientId)) groups.set(clientId, []);
+                groups.get(clientId).push({meta, data});
+            });
+            groups.forEach(group => group.sort((a,b) => getRecordDate(a) - getRecordDate(b)));
+            return [...groups.entries()].map(([clientId, records]) => ({clientId, records})).sort((a,b) => getRecordDate(b.records.at(-1)) - getRecordDate(a.records.at(-1)));
+        }
+
         function renderPatientList() {
             const search = document.getElementById('patient-search').value.trim().toLowerCase();
             const filter = document.getElementById('patient-filter').value;
             const container = document.getElementById('client-list-container');
-
-            const records = clinicianRecords.map(normalizeRecord).filter(({ meta, data }) => {
-                const name = String(meta.name || data['demo-name'] || '').toLowerCase();
-                const contact = String(meta.contact || data['demo-contact'] || '').toLowerCase();
-                const safety = hasSafetyFlag(data);
-                const review = recordNeedsReview(data);
-                const matchesSearch = !search || name.includes(search) || contact.includes(search);
+            const groups = groupRecordsByClient(clinicianRecords).filter(group => {
+                const latest = group.records.at(-1) || {meta:{}, data:{}};
+                const name = String(latest.meta.name || latest.data['demo-name'] || '').toLowerCase();
+                const contact = String(latest.meta.contact || latest.data['demo-contact'] || '').toLowerCase();
+                const safety = group.records.some(r => hasSafetyFlag(r.data));
+                const review = group.records.some(r => recordNeedsReview(r.data));
+                const matchesSearch = !search || name.includes(search) || contact.includes(search) || group.clientId.toLowerCase().includes(search);
                 const matchesFilter = filter === 'all' || (filter === 'review' && review) || (filter === 'safety' && safety);
                 return matchesSearch && matchesFilter;
             });
 
-            if (!records.length) {
-                container.innerHTML = '<div class="text-center py-16 text-slate-400 font-semibold">No records match your filters.</div>';
+            if (!groups.length) {
+                container.innerHTML = '<div class="text-center py-16 text-slate-400 font-semibold">No clients match your filters.</div>';
                 return;
             }
 
             container.innerHTML = '';
-            records.forEach(({ meta, data }) => {
+            groups.forEach(group => {
+                const latest = group.records.at(-1) || {meta:{}, data:{}};
                 const card = document.createElement('button');
                 card.type = 'button';
                 card.className = 'focus-ring admin-card w-full text-left bg-white p-5 rounded-2xl border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4';
@@ -1503,34 +1671,191 @@ const qualSteps = [
                 const left = document.createElement('div');
                 const name = document.createElement('h3');
                 name.className = 'font-extrabold text-slate-800 text-lg';
-                name.textContent = meta.name || data['demo-name'] || 'Unnamed patient';
-                const contact = document.createElement('p');
-                contact.className = 'text-sm text-slate-500 mt-1';
-                contact.textContent = meta.contact || data['demo-contact'] || 'No contact recorded';
-                left.append(name, contact);
+                name.textContent = latest.meta.name || latest.data['demo-name'] || 'Unnamed patient';
+                const metaLine = document.createElement('p');
+                metaLine.className = 'text-sm text-slate-500 mt-1';
+                metaLine.textContent = `${group.clientId} · ${group.records.length} assessment${group.records.length === 1 ? '' : 's'}`;
+                left.append(name, metaLine);
 
                 const right = document.createElement('div');
                 right.className = 'sm:text-right';
                 const date = document.createElement('p');
                 date.className = 'text-xs font-extrabold text-[#479375] bg-[#ECFDF5] px-3 py-1 rounded-full inline-flex';
-                const dateSource = meta.date || data.submittedAt || '';
-                date.textContent = dateSource ? new Date(dateSource).toLocaleDateString() : 'Date unavailable';
+                date.textContent = getRecordDate(latest).getTime() ? getRecordDate(latest).toLocaleDateString() : 'Date unavailable';
                 right.append(date);
 
-                const flags = [];
-                if (hasSafetyFlag(data)) flags.push('<span class="mt-2 inline-flex text-xs font-extrabold text-red-700 bg-red-50 border border-red-100 px-2.5 py-1 rounded-full">Safety review</span>');
-                else if (recordNeedsReview(data)) flags.push('<span class="mt-2 inline-flex text-xs font-extrabold text-amber-700 bg-amber-50 border border-amber-100 px-2.5 py-1 rounded-full">Needs review</span>');
-                if (flags.length) right.insertAdjacentHTML('beforeend', flags.join(' '));
+                if (group.records.some(r => hasSafetyFlag(r.data))) {
+                    right.insertAdjacentHTML('beforeend', '<span class="mt-2 inline-flex text-xs font-extrabold text-red-700 bg-red-50 border border-red-100 px-2.5 py-1 rounded-full">Safety review</span>');
+                } else if (group.records.some(r => recordNeedsReview(r.data))) {
+                    right.insertAdjacentHTML('beforeend', '<span class="mt-2 inline-flex text-xs font-extrabold text-amber-700 bg-amber-50 border border-amber-100 px-2.5 py-1 rounded-full">Needs review</span>');
+                }
 
                 card.append(left, right);
-                card.addEventListener('click', () => generateDashboard(data));
+                card.addEventListener('click', () => showClientJourney(group));
                 container.appendChild(card);
             });
         }
 
+        function buildLongitudinalSeries(records) {
+            return records.map(r => {
+                const q = getQuantitativeProfile(r.data);
+                return {
+                    date: getRecordDate(r),
+                    label: getRecordDate(r).toLocaleDateString(),
+                    data: r.data,
+                    phq: q.phq,
+                    gad: q.gad,
+                    dassD: q.dass.d,
+                    dassA: q.dass.a,
+                    dassS: q.dass.s,
+                    wem: q.wem,
+                    type: r.meta.assessmentType || r.data['assessment-type'] || 'Assessment',
+                    phase: r.meta.treatmentPhase || r.data['treatment-phase'] || 'Unspecified',
+                    session: r.meta.sessionNumber || r.data['session-number'] || ''
+                };
+            });
+        }
+
+        function trajectoryDirection(series, key, higherIsBetter = false) {
+            if (series.length < 2) return {label:'Insufficient data', delta:0, stable:false};
+            const first = Number(series[0][key] || 0), last = Number(series.at(-1)[key] || 0), delta = last - first;
+            const values = series.map(x => Number(x[key] || 0));
+            let signChanges = 0, prev = 0;
+            for (let i=1;i<values.length;i++) {
+                const d = values[i]-values[i-1];
+                const sign = d > 0 ? 1 : d < 0 ? -1 : 0;
+                if (sign && prev && sign !== prev) signChanges++;
+                if (sign) prev = sign;
+            }
+            const improvement = higherIsBetter ? delta : -delta;
+            const label = improvement > 2 ? 'Improving' : improvement < -2 ? 'Deteriorating' : Math.abs(delta) <= 2 ? 'Broadly stable' : 'Fluctuating';
+            return {label, delta, stable: signChanges <= 1};
+        }
+
+        function formatDelta(delta) { return delta > 0 ? `+${delta}` : String(delta); }
+
+        function themeMatrixForRecords(records) {
+            return analysisThemeCatalog.slice(0,9).map(theme => {
+                const cells = records.map(r => {
+                    const result = analyzeQualitativeThemes(r.data).themes.find(t => t.id === theme.id);
+                    if (!result) return {level:'not-mentioned', symbol:'·'};
+                    if (result.mentions >= 3 || result.domains.length >= 2) return {level:'high', symbol:'●'};
+                    if (result.mentions === 2) return {level:'moderate', symbol:'◐'};
+                    return {level:'tentative', symbol:'○'};
+                });
+                return {...theme, cells};
+            });
+        }
+
+        function renderThemeEvolution(series) {
+            const head = document.getElementById('theme-evolution-head');
+            const body = document.getElementById('theme-evolution-body');
+            head.innerHTML = `<tr class="bg-slate-50"><th class="text-left px-5 py-3 font-extrabold text-slate-600 sticky left-0 bg-slate-50">Theme</th>${series.map((s,i)=>`<th class="px-3 py-3 text-xs font-extrabold text-slate-500 whitespace-nowrap">T${i+1}</th>`).join('')}<th class="text-left px-5 py-3 font-extrabold text-slate-600">Longitudinal read</th></tr>`;
+            const matrix = themeMatrixForRecords(series.map(s => ({data:s.data})));
+            body.innerHTML = matrix.map(theme => {
+                const levels = theme.cells.map(c=>c.level);
+                const firstPresent = levels.findIndex(l=>l!=='not-mentioned');
+                const lastPresent = [...levels].reverse().findIndex(l=>l!=='not-mentioned');
+                const lastIndex = lastPresent === -1 ? -1 : levels.length - 1 - lastPresent;
+                let read = 'Not sufficiently mentioned to characterize a trajectory.';
+                if (firstPresent >= 0 && lastIndex >= 0) {
+                    const first = levels[firstPresent], last = levels[lastIndex];
+                    if (['high','moderate','tentative'].indexOf(first)>=0 && last==='not-mentioned') read='Later assessments do not mention this theme; persistence is unresolved.';
+                    else if (['high','moderate'].indexOf(first)>=0 && last==='tentative') read='Appears less salient in later available narrative.';
+                    else if (first==='tentative' && last==='high') read='Appears to become more salient later.';
+                    else read='Theme remains variably present across the assessment series.';
+                }
+                return `<tr class="border-t border-slate-100"><td class="px-5 py-4 font-extrabold text-slate-800 whitespace-nowrap sticky left-0 bg-white">${escapeHtml(theme.label)}</td>${theme.cells.map(c=>`<td class="px-3 py-4 text-center font-extrabold text-slate-600" title="${escapeHtml(c.level)}">${c.symbol}</td>`).join('')}<td class="px-5 py-4 text-xs text-slate-500 leading-relaxed min-w-[260px]">${escapeHtml(read)}</td></tr>`;
+            }).join('');
+        }
+
+        function renderLongitudinalChart(series) {
+            const ctx = document.getElementById('longitudinalChart').getContext('2d');
+            if (window.longitudinalChartInstance) window.longitudinalChartInstance.destroy();
+            window.longitudinalChartInstance = new Chart(ctx, {
+                type:'line',
+                data:{
+                    labels:series.map(s=>s.label),
+                    datasets:[
+                        {label:'PHQ-9',data:series.map(s=>s.phq),borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,.08)',tension:.25,borderWidth:2,pointRadius:3},
+                        {label:'GAD-7',data:series.map(s=>s.gad),borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.08)',tension:.25,borderWidth:2,pointRadius:3},
+                        {label:'WEMWBS',data:series.map(s=>s.wem),borderColor:'#479375',backgroundColor:'rgba(71,147,117,.08)',tension:.25,borderWidth:2,pointRadius:3}
+                    ]
+                },
+                options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{usePointStyle:true}}},scales:{y:{beginAtZero:true,grid:{color:'rgba(15,23,42,.06)'}},x:{grid:{display:false}}}}
+            });
+        }
+
+        function showClientJourney(group) {
+            portalMode = true;
+            const series = buildLongitudinalSeries(group.records);
+            const first = series[0], latest = series.at(-1);
+            document.querySelectorAll('.step-section').forEach(el=>el.classList.remove('active'));
+            document.getElementById('step-client-journey').classList.add('active');
+            document.getElementById('header-bar').classList.remove('hidden');
+            document.getElementById('nav-footer').classList.add('hidden');
+            document.getElementById('section-label').textContent='Clinician portal';
+            document.getElementById('section-counter').textContent='Longitudinal patient view';
+            document.getElementById('progress-bar').style.width='100%';
+            document.getElementById('progress-text').textContent='';
+            document.getElementById('remaining-text').textContent='';
+
+            const patientName = latest?.data?.['demo-name'] || latest?.meta?.name || 'Patient';
+            document.getElementById('journey-patient-summary').textContent = `${patientName} · ${group.clientId}`;
+            document.getElementById('journey-assessments').textContent = series.length;
+            const spanDays = Math.max(0, Math.round((latest.date - first.date)/86400000));
+            document.getElementById('journey-span').textContent = series.length>1 ? `${spanDays} day${spanDays===1?'':'s'}` : 'Single assessment';
+            const phqDir=trajectoryDirection(series,'phq'), gadDir=trajectoryDirection(series,'gad'), wemDir=trajectoryDirection(series,'wem',true);
+            document.getElementById('journey-phq-change').textContent = series.length>1 ? `${formatDelta(phqDir.delta)} · ${phqDir.label}` : '--';
+            document.getElementById('journey-gad-change').textContent = series.length>1 ? `${formatDelta(gadDir.delta)} · ${gadDir.label}` : '--';
+            document.getElementById('journey-wem-change').textContent = series.length>1 ? `${formatDelta(wemDir.delta)} · ${wemDir.label}` : '--';
+
+            const attention=[];
+            if (hasSafetyFlag(latest.data)) attention.push('The most recent assessment contains a safety flag requiring direct clinical review.');
+            if (phqDir.label==='Deteriorating' || gadDir.label==='Deteriorating') attention.push('A recent symptom trajectory shows deterioration relative to baseline. Review recent stressors, treatment response, functioning, and safety.');
+            if (attention.length) { document.getElementById('journey-attention').classList.remove('hidden'); document.getElementById('journey-attention-text').textContent=attention.join(' '); } else document.getElementById('journey-attention').classList.add('hidden');
+
+            const cards=[
+                ['PHQ-9',first.phq,latest.phq,27,'Symptoms'],['GAD-7',first.gad,latest.gad,21,'Symptoms'],['DASS stress',first.dassS,latest.dassS,42,'Symptoms'],['WEMWBS',first.wem,latest.wem,70,'Well-being']
+            ];
+            document.getElementById('journey-score-cards').innerHTML=cards.map(([label,b,c,max,type])=>{const d=c-b; return `<article class="rounded-2xl bg-slate-50 border border-slate-100 p-4"><div class="flex justify-between gap-3"><span class="text-sm font-extrabold text-slate-700">${label}</span><span class="text-xs font-extrabold ${d<0&&type==='Symptoms'||d>0&&type==='Well-being'?'text-emerald-700':'text-slate-500'}">${formatDelta(d)}</span></div><div class="text-xs text-slate-400 mt-2">Baseline ${b}/${max} · Current ${c}/${max}</div><div class="severity-bar mt-3"><div style="width:${Math.max(0,Math.min(100,c/max*100))}%"></div></div></article>`}).join('');
+            renderLongitudinalChart(series);
+            renderThemeEvolution(series);
+
+            const firstAna=analyzeQualitativeThemes(first.data), lastAna=analyzeQualitativeThemes(latest.data);
+            const firstSynth=buildPhenomenologicalSynthesis(first.data,firstAna.themes), lastSynth=buildPhenomenologicalSynthesis(latest.data,lastAna.themes);
+            document.getElementById('journey-ipa').innerHTML=firstSynth.map((item,i)=>{const later=lastSynth[i];return `<article class="analysis-card"><span class="analysis-tag">${escapeHtml(item.label)}</span><p class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mt-3">At baseline</p><p class="text-sm text-slate-700 leading-relaxed mt-1">${escapeHtml(item.text)}</p><p class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mt-3">Most recent</p><p class="text-sm text-slate-700 leading-relaxed mt-1">${escapeHtml(later?.text || 'Not enough recent narrative to compare.')}</p></article>`}).join('');
+
+            const latestIntegrated=buildMixedMethodIntegration(lastAna,getQuantitativeProfile(latest.data));
+            const currentThemeIds=new Set(lastAna.themes.map(t=>t.id));
+            const previousThemeIds=new Set(firstAna.themes.map(t=>t.id));
+            const integration=[];
+            latestIntegrated.slice(0,6).forEach(item=>integration.push(item));
+            const changedThemes=analysisThemeCatalog.filter(t=>currentThemeIds.has(t.id)!==previousThemeIds.has(t.id));
+            if(changedThemes.length) integration.push(...changedThemes.slice(0,2).map(theme=>({theme,type:'complementary',relationship:`Theme presence differs between baseline and the most recent narrative. Review whether this reflects meaningful change, changed circumstances, or simply a theme not being mentioned.` ,linked:[]})));
+            document.getElementById('journey-integration').innerHTML=(integration.length?integration:[{theme:{label:'No stable integration pattern'},type:'unresolved',relationship:'There is not enough repeated data to characterize a reliable qualitative-quantitative relationship.',linked:[]}]).map(item=>`<article class="analysis-card ${item.type}"><div class="flex items-center justify-between gap-2"><h5 class="font-extrabold text-slate-800">${escapeHtml(item.theme.label)}</h5><span class="analysis-tag">${escapeHtml(item.type)}</span></div><p class="text-sm text-slate-700 leading-relaxed mt-2">${escapeHtml(item.relationship)}</p><p class="text-xs text-slate-500 mt-2">${escapeHtml(item.linked.map(x=>`${x.label}: ${x.severity} (${x.score})`).join(' · '))}</p></article>`).join('');
+
+            const questions=buildClinicalExploration(lastAna,getQuantitativeProfile(latest.data));
+            const longitudinalQuestions=[];
+            if (series.length>=2 && (phqDir.label==='Deteriorating'||gadDir.label==='Deteriorating')) longitudinalQuestions.push('Explore what has changed recently and whether symptom worsening is linked to new stressors, treatment barriers, or changes in functioning.');
+            if (series.length>=3 && phqDir.label==='Improving' && wemDir.label==='Improving') longitudinalQuestions.push('Explore what the client believes has contributed to improvement and which gains feel most sustainable.');
+            if (series.length>=3) longitudinalQuestions.push('Ask which changes the client experiences as most meaningful, even where questionnaire scores and narrative emphasis do not fully align.');
+            const allQuestions=[...longitudinalQuestions,...questions].slice(0,8);
+            document.getElementById('journey-questions').innerHTML=allQuestions.map((q,i)=>`<article class="analysis-card"><div class="flex items-start gap-3"><span class="w-7 h-7 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-xs font-extrabold shrink-0">${i+1}</span><p class="text-sm text-slate-700 leading-relaxed">${escapeHtml(q)}</p></div></article>`).join('');
+
+            document.getElementById('journey-timeline').innerHTML=series.slice().reverse().map((item,revIndex)=>{const originalIndex=series.length-1-revIndex;const summary=`PHQ-9 ${item.phq} · GAD-7 ${item.gad} · WEMWBS ${item.wem}`;const btn=document.createElement('button');return `<div class="p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div><p class="font-extrabold text-slate-800">${escapeHtml(item.type)}</p><p class="text-xs text-slate-500 mt-1">${escapeHtml(item.phase)}${item.session?` · Session ${escapeHtml(item.session)}`:''} · ${escapeHtml(item.label)}</p><p class="text-xs text-slate-400 mt-1">${escapeHtml(summary)}</p></div><button type="button" class="focus-ring px-4 py-2.5 rounded-full border border-slate-200 bg-white text-slate-700 text-sm font-extrabold" onclick="openJourneyAssessment(${originalIndex})">Open assessment</button></div>`}).join('');
+            window.currentJourneyRecords=group.records;
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+
+        function openJourneyAssessment(index) {
+            const record=window.currentJourneyRecords?.[index];
+            if (record) generateDashboard(record.data);
+        }
+
         function updateAdminStats() {
             const normalized = clinicianRecords.map(normalizeRecord);
-            document.getElementById('stat-records').textContent = normalized.length;
+            document.getElementById('stat-records').textContent = new Set(normalized.map(r => r.meta.clientId || r.data['client-id'] || 'UNKNOWN')).size;
             document.getElementById('stat-safety').textContent = normalized.filter(r => hasSafetyFlag(r.data)).length;
             document.getElementById('stat-review').textContent = normalized.filter(r => recordNeedsReview(r.data)).length;
             document.getElementById('stat-updated').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -1733,6 +2058,7 @@ const qualSteps = [
         document.getElementById('patient-search').addEventListener('input', renderPatientList);
         document.getElementById('patient-filter').addEventListener('change', renderPatientList);
         document.getElementById('results-back').addEventListener('click', goBackToPatients);
+        document.getElementById('journey-back').addEventListener('click', goBackToPatients);
         document.getElementById('btn-print').addEventListener('click', () => window.print());
         document.getElementById('retry-submit').addEventListener('click', submitAssessment);
 
@@ -1752,6 +2078,7 @@ const qualSteps = [
 
             buildQualitativeUI();
             rebuildScales();
+            ensureClientId();
             applyLanguage();
             loadData();
             bindDynamicInputs();
