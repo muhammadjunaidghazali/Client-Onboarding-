@@ -232,6 +232,14 @@
             transition: width .5s ease;
         }
 
+        .analysis-card { border: 1px solid #e5e7eb; background: #fff; border-radius: 1rem; padding: 1rem; }
+        .analysis-card .analysis-tag { display:inline-flex; align-items:center; border-radius:999px; padding:.25rem .55rem; background:#f1f5f9; color:#64748b; font-size:.65rem; font-weight:900; text-transform:uppercase; letter-spacing:.05em; }
+        .analysis-card .evidence { border-left:3px solid #d7e8df; padding-left:.75rem; margin-top:.75rem; color:#475569; font-size:.8rem; line-height:1.55; }
+        .analysis-card.convergent { border-color:#b8d7c7; background:#f8fcfa; }
+        .analysis-card.complementary { border-color:#bfdbfe; background:#f8fbff; }
+        .analysis-card.divergent { border-color:#fde68a; background:#fffcf2; }
+        .analysis-card.unresolved { border-color:#e2e8f0; background:#fafafa; }
+
         .modal-backdrop {
             background: rgba(15,23,42,.45);
         }
@@ -434,6 +442,13 @@
                         <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-50 border border-white shadow-sm mb-6"><svg class="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg></div>
                         <h2 id="completion-title" class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-4">Your assessment has been submitted.</h2>
                         <p class="text-slate-500 max-w-2xl mx-auto text-lg leading-relaxed">Thank you for sharing your experience. You can now arrange your session or contact the practice directly.</p>
+                        <div id="client-result-summary" class="hidden mt-8 text-left rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
+                            <div class="flex items-center gap-2 mb-3"><span class="section-chip"><span>Summary</span></span><span class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Initial screening snapshot</span></div>
+                            <h3 class="text-xl font-extrabold text-slate-800">Your initial well-being summary</h3>
+                            <p id="client-summary-overview" class="text-sm text-slate-600 leading-relaxed mt-3"></p>
+                            <div id="client-summary-signals" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5"></div>
+                            <div class="mt-5 rounded-2xl bg-emerald-50 border border-emerald-100 p-4"><p class="text-sm font-extrabold text-emerald-900">What happens next?</p><p class="text-sm text-emerald-800 leading-relaxed mt-1">A fuller interpretation of your responses requires professional clinical discussion and context. Detailed qualitative and quantitative analysis is available during a session.</p></div>
+                        </div>
                     </div>
 
                     <div id="submission-error" class="hidden">
@@ -552,6 +567,25 @@
                         <div class="h-80"><canvas id="resultsChart" aria-label="Clinical screening chart"></canvas></div>
                     </div>
                 </div>
+
+                <section id="integrated-analysis" class="mt-6 rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden">
+                    <div class="p-5 sm:p-6 border-b border-slate-100 bg-slate-50/70">
+                        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                            <div>
+                                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-extrabold uppercase tracking-wider mb-3"><span>Integrated formulation</span></div>
+                                <h3 class="text-xl sm:text-2xl font-extrabold text-slate-800">Qualitative + Quantitative Analysis</h3>
+                                <p class="text-sm text-slate-500 mt-2 max-w-3xl leading-relaxed">IPA-informed phenomenological synthesis and structured thematic analysis are integrated with the screening profile to identify convergence, divergence, and areas for clinical exploration.</p>
+                            </div>
+                            <div class="rounded-2xl bg-white border border-slate-200 p-3 max-w-sm"><p class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Method note</p><p class="text-xs text-slate-600 leading-relaxed mt-1">This is a structured decision-support synthesis. It does not constitute a full clinician-led IPA, a diagnosis, or a substitute for clinical judgement.</p></div>
+                        </div>
+                    </div>
+                    <div class="p-5 sm:p-6 space-y-6">
+                        <div><div class="flex items-center justify-between gap-3 mb-3"><div><h4 class="font-extrabold text-slate-800">Integrated clinical snapshot</h4><p class="text-xs text-slate-400 mt-1">Highest-priority patterns across both data streams</p></div><span id="analysis-confidence" class="text-xs font-extrabold px-3 py-1 rounded-full bg-slate-100 text-slate-600">Confidence: --</span></div><div id="integrated-snapshot" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div></div>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div><div class="mb-3"><h4 class="font-extrabold text-slate-800">IPA-informed phenomenological synthesis</h4><p class="text-xs text-slate-400 mt-1">Lived experience, meaning-making, self, relationships, future orientation</p></div><div id="ipa-synthesis" class="space-y-3"></div></div><div><div class="mb-3"><h4 class="font-extrabold text-slate-800">Thematic analysis</h4><p class="text-xs text-slate-400 mt-1">Cross-domain candidate themes and supporting evidence</p></div><div id="theme-analysis" class="space-y-3"></div></div></div>
+                        <div><div class="mb-3"><h4 class="font-extrabold text-slate-800">Mixed-method integration</h4><p class="text-xs text-slate-400 mt-1">How narrative patterns relate to screening signals</p></div><div id="mixed-method-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div></div>
+                        <div><div class="mb-3"><h4 class="font-extrabold text-slate-800">Clinical questions for exploration</h4><p class="text-xs text-slate-400 mt-1">Suggested interview prompts, not automated conclusions</p></div><div id="clinical-exploration" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div></div>
+                    </div>
+                </section>
 
                 <div class="mt-6 rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden">
                     <div class="p-5 sm:p-6 border-b border-slate-100"><h3 class="font-extrabold text-slate-800">Qualitative intake</h3><p class="text-xs text-slate-400 mt-1">Patient narrative responses for clinical review</p></div>
@@ -962,6 +996,7 @@ const qualSteps = [
                 });
 
                 submissionDone = true;
+                buildClientSummary(data);
                 clearDraft();
                 document.getElementById('submission-loading').classList.add('hidden');
                 document.getElementById('submission-success').classList.remove('hidden');
@@ -1221,6 +1256,119 @@ const qualSteps = [
             }).join('');
         }
 
+        const analysisThemeCatalog = [
+            { id:'emotional-burden', label:'Emotional burden', keywords:['overwhelmed','overwhelm','heavy','burden','sad','depressed','down','mayoos','udaas','cry','crying','lonely','loneliness','emotion','emotional','hopeless','na umeed','na-umeed'], domains:['Internal Thoughts','Daily Routine','Physical Well-being'] },
+            { id:'anxiety-worry', label:'Worry and anxiety', keywords:['worry','worried','worrying','anxious','anxiety','panic','fear','afraid','ghabrahat','tension','fikr','fikar','bechain','bechaini'], domains:['Internal Thoughts','Physical Well-being','Daily Routine'] },
+            { id:'sleep-energy', label:'Sleep, energy and physical strain', keywords:['sleep','neend','tired','fatigue','energy','thakan','thaka','appetite','bhook','headache','body','jism','khichao'], domains:['Physical Well-being'] },
+            { id:'functional-impact', label:'Functional disruption', keywords:['work','study','studies','college','school','routine','productive','productivity','concentrate','focus','avoid','avoiding','daily','kaam','padhai','parhai'], domains:['Daily Routine'] },
+            { id:'relational-pressure', label:'Interpersonal and family pressure', keywords:['family','parents','mother','father','husband','wife','brother','sister','friend','friends','relationship','marriage','expectation','pressure','ghar','khandan','log','dost'], domains:['Family Context','Daily Routine'] },
+            { id:'life-transition', label:'Life change and uncertainty', keywords:['change','changed','transition','move','moved','job','financial','money','loss','separation','divorce','new','future','recent','waqiya','mali','tabdeeli','mushkil'], domains:['Life Changes'] },
+            { id:'meaning-faith', label:'Meaning, faith and coping', keywords:['faith','prayer','prayers','religion','allah','dua','namaz','quran','spiritual','meaning','purpose','hope','trust','coping','cope','ibadat','imaan','aqeedah'], domains:['Meaning & Faith','Internal Thoughts'] },
+            { id:'self-worth-agency', label:'Self-worth and agency', keywords:['worth','worthless','failure','fail','guilt','shame','self','confidence','confident','control','powerless','helpless','value','qeemat','ahmiyat','aitmad','faisla','decision'], domains:['Internal Thoughts','Daily Routine'] },
+            { id:'social-withdrawal', label:'Social withdrawal or disconnection', keywords:['avoid social','avoid friends','isolated','isolation','alone','lonely','withdraw','withdrawal','people','social','friends','door','doori','milna julna'], domains:['Daily Routine','Family Context'] },
+            { id:'coping-resources', label:'Coping and protective resources', keywords:['support','help','cope','coping','exercise','walk','family support','friend support','prayer','faith','hope','therapy','supportive','madad'], domains:['Meaning & Faith','Family Context','Daily Routine'] }
+        ];
+
+        function normalizeAnalysisText(value) { return String(value || '').replace(/\s+/g, ' ').trim(); }
+        function collectQualitativeResponses(data) {
+            const responses = [];
+            qualSteps.forEach(s => [1,2].forEach(qn => { const text = normalizeAnalysisText(data[`q${s.id}-${qn}`]); if (text) responses.push({ domain:s.en.title, question:`Question ${qn}`, text }); }));
+            return responses;
+        }
+        function keywordHits(text, keywords) { const lower = text.toLowerCase(); return keywords.filter(k => lower.includes(k.toLowerCase())); }
+        function analyzeQualitativeThemes(data) {
+            const responses = collectQualitativeResponses(data);
+            const themes = analysisThemeCatalog.map(theme => {
+                const evidence = [];
+                const hitTerms = new Set();
+                responses.forEach(r => { const hits = keywordHits(r.text, theme.keywords); if (hits.length) { hits.forEach(h => hitTerms.add(h)); evidence.push({...r, hits}); } });
+                const domains = [...new Set(evidence.map(e => e.domain))];
+                const mentions = evidence.length;
+                const confidence = mentions >= 3 || domains.length >= 2 ? 'Higher' : mentions === 2 ? 'Moderate' : 'Tentative';
+                return {...theme, evidence, domains, mentions, confidence, hitTerms:[...hitTerms]};
+            }).filter(t => t.mentions > 0);
+            const rank = {Higher:3, Moderate:2, Tentative:1};
+            themes.sort((a,b) => (rank[b.confidence]-rank[a.confidence]) || (b.mentions-a.mentions));
+            return {responses, themes};
+        }
+        function buildPhenomenologicalSynthesis(data, themes) {
+            const joined = collectQualitativeResponses(data).map(r => r.text).join(' ').toLowerCase();
+            const has = (...terms) => terms.some(t => joined.includes(t));
+            return [
+                {label:'Lived experience', text: themes.length ? `The narrative emphasizes ${themes.slice(0,3).map(t => t.label.toLowerCase()).join(', ')}.` : 'The available narrative is too limited to identify a stable lived-experience pattern.'},
+                {label:'Meaning-making', text: has('why','cause','reason','meaning','purpose','faith','allah','dua','namaz','aqeedah') ? 'The person appears to be making sense of the situation through perceived causes, beliefs, meaning, or explanations.' : 'Meaning-making is not clearly developed in the available responses and may benefit from further exploration.'},
+                {label:'Sense of self and agency', text: has('control','worth','worthless','confidence','confident','failure','decision','faisla','qeemat','ahmiyat') ? 'The responses contain material relevant to self-evaluation, confidence, perceived control, or agency.' : 'There is insufficient narrative evidence to characterize self-evaluation or agency with confidence.'},
+                {label:'Relational world', text: has('family','parents','friend','relationship','husband','wife','ghar','khandan','dost') ? 'Relationships and social expectations appear relevant to the person’s current experience.' : 'Relational context is present only minimally in the available narrative.'},
+                {label:'Future orientation', text: has('future','hope','hopeless','change','purpose','next','mustaqbil','umeed') ? 'The narrative contains material about hope, uncertainty, desired change, or the future.' : 'Future orientation is not sufficiently described to support a clear interpretation.'}
+            ];
+        }
+        function getQuantitativeProfile(data) {
+            const phq = extractScore(data,'phq',9), gad = extractScore(data,'gad',7), dass = extractDass(data), wem = extractScore(data,'wem',14);
+            const signals = [
+                {id:'mood',label:'Depressive symptom burden',severity:getPhqSeverity(phq),score:phq,high:phq>=10},
+                {id:'anxiety',label:'Anxiety symptom burden',severity:getGadSeverity(gad),score:gad,high:gad>=10},
+                {id:'stress',label:'Stress burden',severity:getDassSeverity(dass.s,'s'),score:dass.s,high:dass.s>=19},
+                {id:'wellbeing',label:'Well-being',severity:wem>=60?'Higher':wem>=43?'Mid-range':'Lower',score:wem,high:wem<43}
+            ];
+            return {phq,gad,dass,wem,signals};
+        }
+        const themeToQuantSignals = {
+            'emotional-burden':['mood','wellbeing'],'anxiety-worry':['anxiety','stress'],'sleep-energy':['mood','wellbeing','stress'],
+            'functional-impact':['mood','anxiety','wellbeing'],'relational-pressure':['mood','anxiety','stress'],'life-transition':['mood','anxiety','stress'],
+            'meaning-faith':['wellbeing'],'self-worth-agency':['mood','wellbeing'],'social-withdrawal':['mood','anxiety','wellbeing'],'coping-resources':['wellbeing']
+        };
+        function buildMixedMethodIntegration(analysis, quantitative) {
+            return analysis.themes.slice(0,6).map(theme => {
+                const linked = (themeToQuantSignals[theme.id] || []).map(id => quantitative.signals.find(s=>s.id===id)).filter(Boolean);
+                const elevated = linked.filter(s=>s.high);
+                let type='complementary', relationship='Complementary: the narrative adds context that the screening measures do not directly capture.';
+                if (elevated.length && elevated.length >= Math.max(1,Math.ceil(linked.length/2))) { type='convergent'; relationship='Convergent: the narrative pattern broadly aligns with elevated screening signals.'; }
+                else if (linked.length && elevated.length===0) { type='divergent'; relationship='Divergent or not aligned: the narrative pattern is present without a corresponding elevated screening signal.'; }
+                return {theme,linked,type,relationship};
+            });
+        }
+        function buildClinicalExploration(analysis, quantitative) {
+            const questions=[];
+            const ids=new Set(analysis.themes.slice(0,5).map(t=>t.id));
+            if (hasSafetyFlag(analysis.data)) questions.push('Clarify current safety, intent, access to means, protective factors, and immediate support using your established risk-assessment protocol.');
+            if (ids.has('emotional-burden') || quantitative.phq>=10) questions.push('Explore the onset, duration, variability, and functional impact of the reported low mood or emotional burden.');
+            if (ids.has('anxiety-worry') || quantitative.gad>=10) questions.push('Clarify the main worry themes, triggers, bodily sensations, avoidance patterns, and perceived controllability of worry.');
+            if (ids.has('sleep-energy')) questions.push('Explore sleep pattern, fatigue, appetite, daily rhythm, medical contributors, and the relationship between physical and emotional strain.');
+            if (ids.has('relational-pressure')) questions.push('Clarify family or interpersonal expectations, sources of support, conflict, boundaries, and how relationships shape the current experience.');
+            if (ids.has('life-transition')) questions.push('Explore the meaning of recent life changes, losses, financial or role pressures, and the timeline of symptom escalation.');
+            if (ids.has('meaning-faith')) questions.push('Explore how beliefs, faith, meaning, or spiritual practices function as sources of coping, struggle, hope, or conflict.');
+            if (ids.has('self-worth-agency')) questions.push('Explore self-critical beliefs, confidence, perceived control, decision-making, and situations in which agency feels stronger or weaker.');
+            if (ids.has('coping-resources') || quantitative.wem>=43) questions.push('Identify existing coping strategies and protective resources that can be strengthened during treatment planning.');
+            return [...new Set(questions)].slice(0,6);
+        }
+        function renderIntegratedAnalysis(data) {
+            const analysis=analyzeQualitativeThemes(data); analysis.data=data;
+            const quantitative=getQuantitativeProfile(data), themes=analysis.themes;
+            const synthesis=buildPhenomenologicalSynthesis(data,themes), mixed=buildMixedMethodIntegration(analysis,quantitative), questions=buildClinicalExploration(analysis,quantitative);
+            const evidenceCount=analysis.responses.length;
+            document.getElementById('analysis-confidence').textContent=`Confidence: ${evidenceCount>=8?'Higher':evidenceCount>=4?'Moderate':'Limited'}`;
+            const snapshotItems=[...themes.slice(0,4).map(t=>({title:t.label,body:`${t.confidence} qualitative signal across ${t.domains.join(', ')}.`,tag:'Theme'})),...quantitative.signals.filter(s=>s.high).slice(0,2).map(s=>({title:s.label,body:`${s.severity} screening range, score ${s.score}.`,tag:'Quantitative'}))].slice(0,6);
+            const snapshot=document.getElementById('integrated-snapshot');
+            snapshot.innerHTML=(snapshotItems.length?snapshotItems:[{title:'No dominant pattern identified',body:'The available response set does not support a stable integrated pattern. Clinical interview remains important.',tag:'Unresolved'}]).map(item=>`<article class="analysis-card"><span class="analysis-tag">${escapeHtml(item.tag)}</span><h5 class="font-extrabold text-slate-800 mt-2">${escapeHtml(item.title)}</h5><p class="text-sm text-slate-600 leading-relaxed mt-1">${escapeHtml(item.body)}</p></article>`).join('');
+            document.getElementById('ipa-synthesis').innerHTML=synthesis.map(item=>`<article class="analysis-card"><span class="analysis-tag">${escapeHtml(item.label)}</span><p class="text-sm text-slate-700 leading-relaxed mt-3">${escapeHtml(item.text)}</p></article>`).join('');
+            const themeRoot=document.getElementById('theme-analysis');
+            themeRoot.innerHTML=themes.length?themes.slice(0,6).map(theme=>{const ev=theme.evidence.slice(0,2).map(e=>`${e.domain}: “${escapeHtml(e.text.slice(0,180))}${e.text.length>180?'…':''}”`).join('<br>');return `<article class="analysis-card"><div class="flex items-start justify-between gap-3"><div><span class="analysis-tag">${escapeHtml(theme.confidence)} confidence</span><h5 class="font-extrabold text-slate-800 mt-2">${escapeHtml(theme.label)}</h5></div><span class="text-xs font-extrabold text-slate-400">${theme.mentions} signal${theme.mentions===1?'':'s'}</span></div><p class="text-xs text-slate-500 mt-2">Domains: ${escapeHtml(theme.domains.join(', '))}</p><div class="evidence">${ev}</div></article>`}).join(''):'<div class="analysis-card"><p class="text-sm text-slate-500">No candidate themes were identified by the current structured coding lexicon.</p></div>';
+            const mixedRoot=document.getElementById('mixed-method-grid');
+            mixedRoot.innerHTML=mixed.length?mixed.map(item=>{const q=escapeHtml(item.linked.map(s=>`${s.label}: ${s.severity} (${s.score})`).join(' · '));return `<article class="analysis-card ${item.type}"><div class="flex items-center justify-between gap-2"><h5 class="font-extrabold text-slate-800">${escapeHtml(item.theme.label)}</h5><span class="analysis-tag">${escapeHtml(item.type)}</span></div><p class="text-sm text-slate-700 leading-relaxed mt-2">${escapeHtml(item.relationship)}</p><p class="text-xs text-slate-500 mt-2">${q}</p></article>`}).join(''):'<div class="analysis-card unresolved"><p class="text-sm text-slate-500">No stable mixed-method relationships identified.</p></div>';
+            document.getElementById('clinical-exploration').innerHTML=questions.length?questions.map((q,i)=>`<article class="analysis-card"><div class="flex items-start gap-3"><span class="w-7 h-7 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-xs font-extrabold shrink-0">${i+1}</span><p class="text-sm text-slate-700 leading-relaxed">${escapeHtml(q)}</p></div></article>`).join(''):'<div class="analysis-card"><p class="text-sm text-slate-500">No specific interview prompts were generated from the current pattern set.</p></div>';
+        }
+        function buildClientSummary(data) {
+            const q=getQuantitativeProfile(data), signals=[];
+            if(q.phq>=10) signals.push({title:'Mood',text:`Your screening responses suggest some symptoms related to low mood (${q.phq}/27).`}); else if(q.phq>=5) signals.push({title:'Mood',text:`Your screening responses show some symptoms related to mood (${q.phq}/27).`});
+            if(q.gad>=10) signals.push({title:'Worry and anxiety',text:`Your responses suggest some symptoms related to worry or anxiety (${q.gad}/21).`}); else if(q.gad>=5) signals.push({title:'Worry and anxiety',text:`Your responses show some symptoms related to worry or anxiety (${q.gad}/21).`});
+            if(q.dass.s>=19) signals.push({title:'Stress',text:'Your responses indicate that stress may currently deserve attention.'});
+            if(q.wem<43) signals.push({title:'Well-being',text:'Your well-being responses suggest that additional support may be useful right now.'});
+            if(!signals.length) signals.push({title:'Overall',text:'Your responses do not show a strong elevation on the screening measures used here.'});
+            document.getElementById('client-summary-overview').textContent=signals.length>=2?'Your assessment suggests some areas of emotional or psychological strain that may be worth discussing further. These results are an initial screening snapshot, not a diagnosis.':'Your assessment provides an initial snapshot of your current well-being. A fuller understanding depends on context and professional discussion, not scores alone.';
+            document.getElementById('client-summary-signals').innerHTML=signals.slice(0,4).map(item=>`<div class="rounded-2xl bg-slate-50 border border-slate-100 p-4"><p class="text-sm font-extrabold text-slate-800">${escapeHtml(item.title)}</p><p class="text-sm text-slate-600 leading-relaxed mt-1">${escapeHtml(item.text)}</p></div>`).join('');
+            document.getElementById('client-result-summary').classList.remove('hidden');
+        }
+
         function generateDashboard(clientData) {
             activePatientData = clientData || {};
             portalMode = true;
@@ -1268,6 +1416,7 @@ const qualSteps = [
             document.getElementById('clinician-safety-alert').classList.toggle('hidden', !safety);
             document.getElementById('clinician-safety-text').textContent = safety ? 'PHQ-9 item 9 was endorsed. Review risk, intent, means, protective factors, and immediate safety in line with your clinical protocol.' : '';
 
+            renderIntegratedAnalysis(clientData);
             renderQualitativeResults(clientData);
             renderNumerology(clientData);
 
